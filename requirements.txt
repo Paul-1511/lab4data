@@ -1,0 +1,9 @@
+openeo
+numpy
+matplotlib
+rasterio
+xarray
+pandas
+nbformat
+nbclient
+ipykernel
