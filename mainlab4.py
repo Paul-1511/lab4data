@@ -610,3 +610,47 @@ if __name__ == '__main__':
     plt.savefig('resultado_ejemplo_cyanolakes.png', dpi=150)
     print("\nImagen guardada como 'resultado_ejemplo_cyanolakes.png'")
     plt.show()
+
+# --- INTEGRACIÓN DE ACTIVIDADES 5, 6 y 8 ---
+    import os
+    os.makedirs("outputs", exist_ok=True)
+    
+    print("\n=== GENERANDO ARTEFACTOS PARA EL INFORME ===" )
+    
+    # Simular un diccionario de resultados para las fechas oficiales usando el motor que acabas de probar
+    # (Esto usará tus funciones reales para cada fecha de Atitlán)
+    resultados_atitlan = {}
+    for fecha in OFFICIAL_DATES["Atitlan"][:3]: # Probamos con las primeras fechas para ganar tiempo
+        # Aquí puedes llamar a tu carga real o usar el diccionario de bandas simuladas por fecha
+        res = compute_cyan_index_for_date(bands) 
+        resultados_atitlan[fecha] = res
+
+    fechas_disponibles = list(resultados_atitlan.keys())
+    if len(fechas_disponibles) >= 2:
+        f_a, f_b = fechas_disponibles[0], fechas_disponibles[-1]
+        
+        # Actividad 5: Mapas comparativos
+        mapa_calor_comparativo(
+            resultados_atitlan[f_a]["chlorophyll"],
+            resultados_atitlan[f_b]["chlorophyll"],
+            f_a, f_b, "Atitlán",
+            guardar_en="outputs/act5_comparativo_atitlan.png"
+        )
+        
+        # Actividad 6: Correlación
+        matriz_correlacion(
+            resultados_atitlan[f_a]["NDVI"],
+            resultados_atitlan[f_a]["NDWI"],
+            resultados_atitlan[f_a]["chlorophyll"],
+            lake_mask=resultados_atitlan[f_a]["water_mask"],
+            nombre_lago="Atitlán",
+            guardar_en="outputs/act6_correlacion.png"
+        )
+        
+        # Actividad 8: Distribuciones
+        cyano_por_fecha = {f: datos["chlorophyll"] for f, datos in resultados_atitlan.items()}
+        comparar_distribuciones(
+            cyano_por_fecha, "Atitlán", umbral=20,
+            guardar_en="outputs/act8_distribuciones.png"
+        )
+        print("¡Artefactos generados exitosamente en la carpeta 'outputs/'!")
