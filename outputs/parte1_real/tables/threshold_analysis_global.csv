@@ -1,0 +1,5 @@
+umbral_ug_L,pixeles_positivos,pixeles_agua,pct_positivo,area_afectada_ha,fechas_con_positivos,fechas_totales,significado_ambiental
+8.0,60146,3756512,1.6011129473298635,2405.84,22,22,Frontera mesotrofico -> eutrofico (OECD 1982). Marca el inicio de la condicion eutrofica.
+20.0,9832,3756512,0.26173216004634087,393.28,15,22,"Umbral usado en la primera version de la Parte 1. Cae dentro de la banda eutrofica de OECD (8-25) y del rango de Alerta 1 de la OMS (12-24), pero NO es una frontera publicada por si mismo."
+25.0,5195,3756512,0.13829318261195492,207.8,14,22,Frontera eutrofico -> hipertrofico (OECD 1982); coincide practicamente con el techo de la Alerta 1 de la OMS (24 ug/L con dominancia de cianobacterias).
+50.0,608,3756512,0.016185227146885195,24.32,5,22,Escenario severo para analisis de sensibilidad. NO aparece como valor de clorofila-a en OECD 1982 ni en las guias de la OMS 2021.

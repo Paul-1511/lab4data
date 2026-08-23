@@ -1,0 +1,23 @@
+VALIDACION DE LA PARTE 1 REGENERADA CON DATOS REALES
+======================================================================
+Generado: 2026-08-23 17:17:06
+
+Rasteres reales presentes : 22/22
+Filas de la serie temporal: 22
+  Amatitlan: 11 fechas
+  Atitlan: 11 fechas
+  Area media de agua Amatitlan: 14.5 km2
+  Area media de agua Atitlan: 122.1 km2
+Area por pixel derivada   : 0.0400 ha (400 m2)
+Evalscript CyanoLakes     : COINCIDE (490 pixeles)
+Uso de synthetic_bands()  : NO (correcto)
+Archivos en figures       : 6
+Archivos en maps          : 8
+Figuras referidas en el informe: 8 (rotas: 0)
+Notebook con flujo real   : True
+
+Avisos  : 0
+
+Criticos: 0
+
+RESULTADO: CORRECTA

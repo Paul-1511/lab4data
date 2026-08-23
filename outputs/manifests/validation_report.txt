@@ -1,0 +1,533 @@
+REPORTE DE VALIDACION DE RASTERES SENTINEL-2 L1C
+======================================================================
+Generado: 2026-08-23T15:54:52
+Directorio: C:\Users\mjyee\Downloads\DataScience\lab4data\outputs\rasters
+
+Archivos encontrados      : 22
+Archivos validados        : 22
+Archivos corruptos        : 0
+Cobertura oficial         : 22/22
+
+Conteo por lago:
+  Amatitlan   : 11
+  Atitlan     : 11
+
+Coherencia entre archivos del mismo lago:
+  Amatitlan    n=11  CRS unico=True Resolucion unica=True Dimensiones unicas=True
+  Atitlan      n=11  CRS unico=True Resolucion unica=True Dimensiones unicas=True
+
+FALTANTES: ninguno
+
+COBERTURA ESPACIAL INCOMPLETA: ninguna
+
+DUPLICADOS: ninguno
+
+======================================================================
+DETALLE POR ARCHIVO
+======================================================================
+
+--- outputs\rasters\Amatitlan\Amatitlan_2025-01-28.tif ---
+  Lago/Fecha      : Amatitlan / 2025-01-28
+  Tamano          : 5.29 MB
+  Bandas (9)     : ['B02', 'B03', 'B04', 'B05', 'B07', 'B08', 'B8A', 'B11', 'B12']
+  Dimensiones     : 681 x 459
+  CRS             : EPSG:32615
+  Transformacion  : [20.0, 0.0, 754560.0, 0.0, -20.0, 1603800.0]
+  Resolucion      : 20.0 x 20.0
+  Bounds          : [754560.0, 1594620.0, 768180.0, 1603800.0]
+  dtype / NoData  : float32 / -9999.0
+  Pixeles validos : 304,273 de 312,579 (97.34%)
+  Alineacion OK   : True
+  Estadisticas por banda:
+           B02: min=    287.0000  max=  10627.0000  media=    926.2880  validos=97.3%
+           B03: min=     20.0000  max=   9960.0000  media=    844.5983  validos=97.3%
+           B04: min=    -32.0000  max=  10023.0000  media=    732.9769  validos=97.3%
+           B05: min=    179.0000  max=   7427.0000  media=    928.4826  validos=97.3%
+           B07: min=     89.0000  max=   7808.0000  media=   1955.5323  validos=97.3%
+           B08: min=    -35.0000  max=  12268.0000  media=   1889.8366  validos=97.3%
+           B8A: min=     44.0000  max=   7352.0000  media=   2181.2315  validos=97.3%
+           B11: min=     24.0000  max=  10406.0000  media=   1531.5535  validos=97.3%
+           B12: min=      4.0000  max=   9527.0000  media=    918.5006  validos=97.3%
+
+--- outputs\rasters\Amatitlan\Amatitlan_2025-04-15.tif ---
+  Lago/Fecha      : Amatitlan / 2025-04-15
+  Tamano          : 5.30 MB
+  Bandas (9)     : ['B02', 'B03', 'B04', 'B05', 'B07', 'B08', 'B8A', 'B11', 'B12']
+  Dimensiones     : 681 x 459
+  CRS             : EPSG:32615
+  Transformacion  : [20.0, 0.0, 754560.0, 0.0, -20.0, 1603800.0]
+  Resolucion      : 20.0 x 20.0
+  Bounds          : [754560.0, 1594620.0, 768180.0, 1603800.0]
+  dtype / NoData  : float32 / -9999.0
+  Pixeles validos : 304,273 de 312,579 (97.34%)
+  Alineacion OK   : True
+  Estadisticas por banda:
+           B02: min=    545.0000  max=  10132.0000  media=   1071.4542  validos=97.3%
+           B03: min=    334.0000  max=  10875.0000  media=   1028.5094  validos=97.3%
+           B04: min=    278.0000  max=  12026.0000  media=    954.9387  validos=97.3%
+           B05: min=    268.0000  max=   9775.0000  media=   1199.7542  validos=97.3%
+           B07: min=    247.0000  max=  10715.0000  media=   2231.9876  validos=97.3%
+           B08: min=     98.0000  max=  12136.0000  media=   2188.4272  validos=97.3%
+           B8A: min=    188.0000  max=  10657.0000  media=   2445.0247  validos=97.3%
+           B11: min=     98.0000  max=  11391.0000  media=   2000.0944  validos=97.3%
+           B12: min=     54.0000  max=  11753.0000  media=   1321.1248  validos=97.3%
+
+--- outputs\rasters\Amatitlan\Amatitlan_2025-04-28.tif ---
+  Lago/Fecha      : Amatitlan / 2025-04-28
+  Tamano          : 5.40 MB
+  Bandas (9)     : ['B02', 'B03', 'B04', 'B05', 'B07', 'B08', 'B8A', 'B11', 'B12']
+  Dimensiones     : 681 x 459
+  CRS             : EPSG:32615
+  Transformacion  : [20.0, 0.0, 754560.0, 0.0, -20.0, 1603800.0]
+  Resolucion      : 20.0 x 20.0
+  Bounds          : [754560.0, 1594620.0, 768180.0, 1603800.0]
+  dtype / NoData  : float32 / -9999.0
+  Pixeles validos : 304,273 de 312,579 (97.34%)
+  Alineacion OK   : True
+  Estadisticas por banda:
+           B02: min=    319.0000  max=  11473.0000  media=   1079.5211  validos=97.3%
+           B03: min=    414.0000  max=  11762.0000  media=   1053.3800  validos=97.3%
+           B04: min=    197.0000  max=  12283.0000  media=    987.5416  validos=97.3%
+           B05: min=    267.0000  max=  10551.0000  media=   1233.5072  validos=97.3%
+           B07: min=    160.0000  max=  10799.0000  media=   2273.1357  validos=97.3%
+           B08: min=     69.0000  max=  12395.0000  media=   2265.4998  validos=97.3%
+           B8A: min=    166.0000  max=  10110.0000  media=   2497.1806  validos=97.3%
+           B11: min=     81.0000  max=  11384.0000  media=   2017.3328  validos=97.3%
+           B12: min=     43.0000  max=  11434.0000  media=   1363.8485  validos=97.3%
+
+--- outputs\rasters\Amatitlan\Amatitlan_2025-11-24.tif ---
+  Lago/Fecha      : Amatitlan / 2025-11-24
+  Tamano          : 5.19 MB
+  Bandas (9)     : ['B02', 'B03', 'B04', 'B05', 'B07', 'B08', 'B8A', 'B11', 'B12']
+  Dimensiones     : 681 x 459
+  CRS             : EPSG:32615
+  Transformacion  : [20.0, 0.0, 754560.0, 0.0, -20.0, 1603800.0]
+  Resolucion      : 20.0 x 20.0
+  Bounds          : [754560.0, 1594620.0, 768180.0, 1603800.0]
+  dtype / NoData  : float32 / -9999.0
+  Pixeles validos : 304,272 de 312,579 (97.34%)
+  Alineacion OK   : True
+  Estadisticas por banda:
+           B02: min=    346.0000  max=   6965.0000  media=    884.1399  validos=97.3%
+           B03: min=    132.0000  max=   7808.0000  media=    800.9550  validos=97.3%
+           B04: min=   -129.0000  max=   8711.0000  media=    623.3495  validos=97.3%
+           B05: min=    187.0000  max=   6025.0000  media=    842.9554  validos=97.3%
+           B07: min=     88.0000  max=   7681.0000  media=   2142.5355  validos=97.3%
+           B08: min=    -62.0000  max=   9113.0000  media=   2060.8970  validos=97.3%
+           B8A: min=     67.0000  max=   7368.0000  media=   2358.5464  validos=97.3%
+           B11: min=     16.0000  max=   8609.0000  media=   1390.7715  validos=97.3%
+           B12: min=     -1.0000  max=  11669.0000  media=    765.0846  validos=97.3%
+
+--- outputs\rasters\Amatitlan\Amatitlan_2026-01-08.tif ---
+  Lago/Fecha      : Amatitlan / 2026-01-08
+  Tamano          : 5.30 MB
+  Bandas (9)     : ['B02', 'B03', 'B04', 'B05', 'B07', 'B08', 'B8A', 'B11', 'B12']
+  Dimensiones     : 681 x 459
+  CRS             : EPSG:32615
+  Transformacion  : [20.0, 0.0, 754560.0, 0.0, -20.0, 1603800.0]
+  Resolucion      : 20.0 x 20.0
+  Bounds          : [754560.0, 1594620.0, 768180.0, 1603800.0]
+  dtype / NoData  : float32 / -9999.0
+  Pixeles validos : 304,273 de 312,579 (97.34%)
+  Alineacion OK   : True
+  Estadisticas por banda:
+           B02: min=    262.0000  max=   7949.0000  media=    935.9996  validos=97.3%
+           B03: min=    106.0000  max=   8660.0000  media=    827.2641  validos=97.3%
+           B04: min=    -51.0000  max=   8541.0000  media=    683.9042  validos=97.3%
+           B05: min=    180.0000  max=   6033.0000  media=    977.8709  validos=97.3%
+           B07: min=    113.0000  max=   6561.0000  media=   1969.8420  validos=97.3%
+           B08: min=      1.0000  max=   9460.0000  media=   1961.3734  validos=97.3%
+           B8A: min=     84.0000  max=   6375.0000  media=   2174.8192  validos=97.3%
+           B11: min=     43.0000  max=   8481.0000  media=   1435.4740  validos=97.3%
+           B12: min=      8.0000  max=   7334.0000  media=    841.7312  validos=97.3%
+
+--- outputs\rasters\Amatitlan\Amatitlan_2026-02-02.tif ---
+  Lago/Fecha      : Amatitlan / 2026-02-02
+  Tamano          : 5.28 MB
+  Bandas (9)     : ['B02', 'B03', 'B04', 'B05', 'B07', 'B08', 'B8A', 'B11', 'B12']
+  Dimensiones     : 681 x 459
+  CRS             : EPSG:32615
+  Transformacion  : [20.0, 0.0, 754560.0, 0.0, -20.0, 1603800.0]
+  Resolucion      : 20.0 x 20.0
+  Bounds          : [754560.0, 1594620.0, 768180.0, 1603800.0]
+  dtype / NoData  : float32 / -9999.0
+  Pixeles validos : 304,273 de 312,579 (97.34%)
+  Alineacion OK   : True
+  Estadisticas por banda:
+           B02: min=    378.0000  max=   8903.0000  media=    971.6474  validos=97.3%
+           B03: min=    137.0000  max=  10111.0000  media=    888.0894  validos=97.3%
+           B04: min=    -71.0000  max=  11871.0000  media=    793.4339  validos=97.3%
+           B05: min=    232.0000  max=   6430.0000  media=   1026.1598  validos=97.3%
+           B07: min=    191.0000  max=   7264.0000  media=   1975.1324  validos=97.3%
+           B08: min=     72.0000  max=  10444.0000  media=   2003.7055  validos=97.3%
+           B8A: min=    169.0000  max=   6451.0000  media=   2178.4016  validos=97.3%
+           B11: min=     65.0000  max=   8402.0000  media=   1546.9035  validos=97.3%
+           B12: min=     37.0000  max=   9147.0000  media=   1006.5041  validos=97.3%
+
+--- outputs\rasters\Amatitlan\Amatitlan_2026-02-07.tif ---
+  Lago/Fecha      : Amatitlan / 2026-02-07
+  Tamano          : 5.26 MB
+  Bandas (9)     : ['B02', 'B03', 'B04', 'B05', 'B07', 'B08', 'B8A', 'B11', 'B12']
+  Dimensiones     : 681 x 459
+  CRS             : EPSG:32615
+  Transformacion  : [20.0, 0.0, 754560.0, 0.0, -20.0, 1603800.0]
+  Resolucion      : 20.0 x 20.0
+  Bounds          : [754560.0, 1594620.0, 768180.0, 1603800.0]
+  dtype / NoData  : float32 / -9999.0
+  Pixeles validos : 304,273 de 312,579 (97.34%)
+  Alineacion OK   : True
+  Estadisticas por banda:
+           B02: min=    230.0000  max=  10783.0000  media=    997.7791  validos=97.3%
+           B03: min=    202.0000  max=  10663.0000  media=    892.1193  validos=97.3%
+           B04: min=    140.0000  max=  10767.0000  media=    805.0017  validos=97.3%
+           B05: min=    224.0000  max=   6445.0000  media=   1091.3088  validos=97.3%
+           B07: min=    198.0000  max=   7529.0000  media=   1975.9245  validos=97.3%
+           B08: min=     54.0000  max=  12238.0000  media=   1984.6748  validos=97.3%
+           B8A: min=    122.0000  max=   6824.0000  media=   2192.6368  validos=97.3%
+           B11: min=     75.0000  max=   9142.0000  media=   1588.7277  validos=97.3%
+           B12: min=      4.0000  max=   9590.0000  media=    991.5364  validos=97.3%
+
+--- outputs\rasters\Amatitlan\Amatitlan_2026-03-29.tif ---
+  Lago/Fecha      : Amatitlan / 2026-03-29
+  Tamano          : 5.38 MB
+  Bandas (9)     : ['B02', 'B03', 'B04', 'B05', 'B07', 'B08', 'B8A', 'B11', 'B12']
+  Dimensiones     : 681 x 459
+  CRS             : EPSG:32615
+  Transformacion  : [20.0, 0.0, 754560.0, 0.0, -20.0, 1603800.0]
+  Resolucion      : 20.0 x 20.0
+  Bounds          : [754560.0, 1594620.0, 768180.0, 1603800.0]
+  dtype / NoData  : float32 / -9999.0
+  Pixeles validos : 304,273 de 312,579 (97.34%)
+  Alineacion OK   : True
+  Estadisticas por banda:
+           B02: min=    227.0000  max=  16082.0000  media=   1063.8196  validos=97.3%
+           B03: min=    -97.0000  max=  18367.0000  media=   1020.7112  validos=97.3%
+           B04: min=   -257.0000  max=  17843.0000  media=    976.1977  validos=97.3%
+           B05: min=   -420.0000  max=  15432.0000  media=   1277.1501  validos=97.3%
+           B07: min=    199.0000  max=  19107.0000  media=   2191.4739  validos=97.3%
+           B08: min=    105.0000  max=  17573.0000  media=   2173.5313  validos=97.3%
+           B8A: min=    135.0000  max=  20804.0000  media=   2433.5805  validos=97.3%
+           B11: min=     97.0000  max=  12021.0000  media=   1948.7557  validos=97.3%
+           B12: min=     55.0000  max=  11988.0000  media=   1260.7601  validos=97.3%
+
+--- outputs\rasters\Amatitlan\Amatitlan_2026-04-13.tif ---
+  Lago/Fecha      : Amatitlan / 2026-04-13
+  Tamano          : 5.36 MB
+  Bandas (9)     : ['B02', 'B03', 'B04', 'B05', 'B07', 'B08', 'B8A', 'B11', 'B12']
+  Dimensiones     : 681 x 459
+  CRS             : EPSG:32615
+  Transformacion  : [20.0, 0.0, 754560.0, 0.0, -20.0, 1603800.0]
+  Resolucion      : 20.0 x 20.0
+  Bounds          : [754560.0, 1594620.0, 768180.0, 1603800.0]
+  dtype / NoData  : float32 / -9999.0
+  Pixeles validos : 304,273 de 312,579 (97.34%)
+  Alineacion OK   : True
+  Estadisticas por banda:
+           B02: min=    473.0000  max=  11200.0000  media=   1063.8190  validos=97.3%
+           B03: min=    385.0000  max=  12060.0000  media=   1052.5626  validos=97.3%
+           B04: min=    155.0000  max=  13537.0000  media=    953.0090  validos=97.3%
+           B05: min=    222.0000  max=  11248.0000  media=   1222.8852  validos=97.3%
+           B07: min=    215.0000  max=  11769.0000  media=   2320.2637  validos=97.3%
+           B08: min=    145.0000  max=  13998.0000  media=   2284.1412  validos=97.3%
+           B8A: min=    179.0000  max=  11731.0000  media=   2535.0830  validos=97.3%
+           B11: min=     62.0000  max=  12640.0000  media=   1962.3119  validos=97.3%
+           B12: min=     36.0000  max=  11702.0000  media=   1302.5583  validos=97.3%
+
+--- outputs\rasters\Amatitlan\Amatitlan_2026-04-28.tif ---
+  Lago/Fecha      : Amatitlan / 2026-04-28
+  Tamano          : 5.22 MB
+  Bandas (9)     : ['B02', 'B03', 'B04', 'B05', 'B07', 'B08', 'B8A', 'B11', 'B12']
+  Dimensiones     : 681 x 459
+  CRS             : EPSG:32615
+  Transformacion  : [20.0, 0.0, 754560.0, 0.0, -20.0, 1603800.0]
+  Resolucion      : 20.0 x 20.0
+  Bounds          : [754560.0, 1594620.0, 768180.0, 1603800.0]
+  dtype / NoData  : float32 / -9999.0
+  Pixeles validos : 304,273 de 312,579 (97.34%)
+  Alineacion OK   : True
+  Estadisticas por banda:
+           B02: min=    512.0000  max=   9639.0000  media=   1256.5055  validos=97.3%
+           B03: min=    552.0000  max=  10226.0000  media=   1168.6912  validos=97.3%
+           B04: min=   -182.0000  max=  11290.0000  media=   1051.5794  validos=97.3%
+           B05: min=    415.0000  max=   9713.0000  media=   1344.5495  validos=97.3%
+           B07: min=    408.0000  max=   9894.0000  media=   2345.3486  validos=97.3%
+           B08: min=    350.0000  max=  11960.0000  media=   2320.4627  validos=97.3%
+           B8A: min=    342.0000  max=   9874.0000  media=   2552.4417  validos=97.3%
+           B11: min=    118.0000  max=  11679.0000  media=   2012.7277  validos=97.3%
+           B12: min=      5.0000  max=  11560.0000  media=   1324.1563  validos=97.3%
+
+--- outputs\rasters\Amatitlan\Amatitlan_2026-06-19.tif ---
+  Lago/Fecha      : Amatitlan / 2026-06-19
+  Tamano          : 5.21 MB
+  Bandas (9)     : ['B02', 'B03', 'B04', 'B05', 'B07', 'B08', 'B8A', 'B11', 'B12']
+  Dimensiones     : 681 x 459
+  CRS             : EPSG:32615
+  Transformacion  : [20.0, 0.0, 754560.0, 0.0, -20.0, 1603800.0]
+  Resolucion      : 20.0 x 20.0
+  Bounds          : [754560.0, 1594620.0, 768180.0, 1603800.0]
+  dtype / NoData  : float32 / -9999.0
+  Pixeles validos : 304,272 de 312,579 (97.34%)
+  Alineacion OK   : True
+  Estadisticas por banda:
+           B02: min=    364.0000  max=   7407.0000  media=    994.7833  validos=97.3%
+           B03: min=    350.0000  max=   7740.0000  media=    983.5607  validos=97.3%
+           B04: min=     25.0000  max=   8324.0000  media=    762.5408  validos=97.3%
+           B05: min=    248.0000  max=   6914.0000  media=   1100.0915  validos=97.3%
+           B07: min=    196.0000  max=   7354.0000  media=   2670.3308  validos=97.3%
+           B08: min=    103.0000  max=   9055.0000  media=   2551.0257  validos=97.3%
+           B8A: min=    114.0000  max=   7247.0000  media=   2872.8319  validos=97.3%
+           B11: min=     32.0000  max=   8965.0000  media=   1769.3342  validos=97.3%
+           B12: min=      2.0000  max=   8812.0000  media=   1017.7498  validos=97.3%
+
+--- outputs\rasters\Atitlan\Atitlan_2025-01-18.tif ---
+  Lago/Fecha      : Atitlan / 2025-01-18
+  Tamano          : 17.88 MB
+  Bandas (9)     : ['B02', 'B03', 'B04', 'B05', 'B07', 'B08', 'B8A', 'B11', 'B12']
+  Dimensiones     : 1380 x 876
+  CRS             : EPSG:32615
+  Transformacion  : [20.0, 0.0, 680160.0, 0.0, -20.0, 1631680.0]
+  Resolucion      : 20.0 x 20.0
+  Bounds          : [680160.0, 1614160.0, 707760.0, 1631680.0]
+  dtype / NoData  : float32 / -9999.0
+  Pixeles validos : 1,184,957 de 1,208,880 (98.02%)
+  Alineacion OK   : True
+  Estadisticas por banda:
+           B02: min=    -51.0000  max=   9305.0000  media=    758.5746  validos=98.1%
+           B03: min=   -138.0000  max=  10102.0000  media=    628.9870  validos=98.1%
+           B04: min=   -658.0000  max=  12922.0000  media=    437.9444  validos=98.1%
+           B05: min=    134.0000  max=   8477.0000  media=    665.5068  validos=98.1%
+           B07: min=    106.0000  max=   8061.0000  media=   1733.9373  validos=98.1%
+           B08: min=     27.0000  max=  11208.0000  media=   1781.4844  validos=98.1%
+           B8A: min=     60.0000  max=   9137.0000  media=   1934.8741  validos=98.1%
+           B11: min=      4.0000  max=  11138.0000  media=   1105.8423  validos=98.1%
+           B12: min=    -53.0000  max=  13951.0000  media=    584.4852  validos=98.0%
+
+--- outputs\rasters\Atitlan\Atitlan_2025-04-13.tif ---
+  Lago/Fecha      : Atitlan / 2025-04-13
+  Tamano          : 17.44 MB
+  Bandas (9)     : ['B02', 'B03', 'B04', 'B05', 'B07', 'B08', 'B8A', 'B11', 'B12']
+  Dimensiones     : 1380 x 876
+  CRS             : EPSG:32615
+  Transformacion  : [20.0, 0.0, 680160.0, 0.0, -20.0, 1631680.0]
+  Resolucion      : 20.0 x 20.0
+  Bounds          : [680160.0, 1614160.0, 707760.0, 1631680.0]
+  dtype / NoData  : float32 / -9999.0
+  Pixeles validos : 1,185,554 de 1,208,880 (98.07%)
+  Alineacion OK   : True
+  Estadisticas por banda:
+           B02: min=    504.0000  max=  10303.0000  media=    894.5943  validos=98.1%
+           B03: min=    297.0000  max=   9558.0000  media=    779.5892  validos=98.1%
+           B04: min=     38.0000  max=   9580.0000  media=    618.6790  validos=98.1%
+           B05: min=    174.0000  max=   6588.0000  media=    949.2619  validos=98.1%
+           B07: min=    163.0000  max=   6859.0000  media=   2007.9669  validos=98.1%
+           B08: min=     66.0000  max=  12361.0000  media=   2034.6212  validos=98.1%
+           B8A: min=    131.0000  max=   6683.0000  media=   2220.2982  validos=98.1%
+           B11: min=     57.0000  max=   7092.0000  media=   1569.4903  validos=98.1%
+           B12: min=     23.0000  max=  11158.0000  media=    919.0164  validos=98.1%
+
+--- outputs\rasters\Atitlan\Atitlan_2025-05-13.tif ---
+  Lago/Fecha      : Atitlan / 2025-05-13
+  Tamano          : 18.56 MB
+  Bandas (9)     : ['B02', 'B03', 'B04', 'B05', 'B07', 'B08', 'B8A', 'B11', 'B12']
+  Dimensiones     : 1380 x 876
+  CRS             : EPSG:32615
+  Transformacion  : [20.0, 0.0, 680160.0, 0.0, -20.0, 1631680.0]
+  Resolucion      : 20.0 x 20.0
+  Bounds          : [680160.0, 1614160.0, 707760.0, 1631680.0]
+  dtype / NoData  : float32 / -9999.0
+  Pixeles validos : 1,185,554 de 1,208,880 (98.07%)
+  Alineacion OK   : True
+  Estadisticas por banda:
+           B02: min=    390.0000  max=  12398.0000  media=   1419.2523  validos=98.1%
+           B03: min=    360.0000  max=  13400.0000  media=   1287.3698  validos=98.1%
+           B04: min=   -458.0000  max=  14586.0000  media=   1160.2036  validos=98.1%
+           B05: min=    180.0000  max=  10790.0000  media=   1429.3147  validos=98.1%
+           B07: min=    157.0000  max=  11599.0000  media=   2482.8114  validos=98.1%
+           B08: min=     65.0000  max=  15239.0000  media=   2416.7860  validos=98.1%
+           B8A: min=    112.0000  max=  12130.0000  media=   2712.3123  validos=98.1%
+           B11: min=     47.0000  max=  11627.0000  media=   1953.9911  validos=98.1%
+           B12: min=      6.0000  max=  11103.0000  media=   1227.1497  validos=98.1%
+
+--- outputs\rasters\Atitlan\Atitlan_2025-07-17.tif ---
+  Lago/Fecha      : Atitlan / 2025-07-17
+  Tamano          : 17.82 MB
+  Bandas (9)     : ['B02', 'B03', 'B04', 'B05', 'B07', 'B08', 'B8A', 'B11', 'B12']
+  Dimensiones     : 1380 x 876
+  CRS             : EPSG:32615
+  Transformacion  : [20.0, 0.0, 680160.0, 0.0, -20.0, 1631680.0]
+  Resolucion      : 20.0 x 20.0
+  Bounds          : [680160.0, 1614160.0, 707760.0, 1631680.0]
+  dtype / NoData  : float32 / -9999.0
+  Pixeles validos : 1,185,548 de 1,208,880 (98.07%)
+  Alineacion OK   : True
+  Estadisticas por banda:
+           B02: min=   -116.0000  max=  10526.0000  media=    801.6252  validos=98.1%
+           B03: min=   -115.0000  max=  11677.0000  media=    718.4488  validos=98.1%
+           B04: min=   -470.0000  max=  12054.0000  media=    480.4753  validos=98.1%
+           B05: min=   -158.0000  max=   7861.0000  media=    766.1733  validos=98.1%
+           B07: min=   -426.0000  max=   9378.0000  media=   2340.7194  validos=98.1%
+           B08: min=      4.0000  max=  12519.0000  media=   2276.8581  validos=98.1%
+           B8A: min=   -456.0000  max=   7595.0000  media=   2553.5082  validos=98.1%
+           B11: min=   -248.0000  max=  11810.0000  media=   1312.3726  validos=98.1%
+           B12: min=    -43.0000  max=  11128.0000  media=    659.6421  validos=98.1%
+
+--- outputs\rasters\Atitlan\Atitlan_2025-11-21.tif ---
+  Lago/Fecha      : Atitlan / 2025-11-21
+  Tamano          : 17.80 MB
+  Bandas (9)     : ['B02', 'B03', 'B04', 'B05', 'B07', 'B08', 'B8A', 'B11', 'B12']
+  Dimensiones     : 1380 x 876
+  CRS             : EPSG:32615
+  Transformacion  : [20.0, 0.0, 680160.0, 0.0, -20.0, 1631680.0]
+  Resolucion      : 20.0 x 20.0
+  Bounds          : [680160.0, 1614160.0, 707760.0, 1631680.0]
+  dtype / NoData  : float32 / -9999.0
+  Pixeles validos : 1,184,900 de 1,208,880 (98.02%)
+  Alineacion OK   : True
+  Estadisticas por banda:
+           B02: min=    -31.0000  max=  11239.0000  media=    928.4908  validos=98.1%
+           B03: min=    162.0000  max=  11147.0000  media=    793.6953  validos=98.1%
+           B04: min=   -265.0000  max=  14414.0000  media=    591.7209  validos=98.1%
+           B05: min=    140.0000  max=  12092.0000  media=    814.7802  validos=98.1%
+           B07: min=    102.0000  max=  12979.0000  media=   1999.6529  validos=98.1%
+           B08: min=     -6.0000  max=  17648.0000  media=   1987.3978  validos=98.1%
+           B8A: min=     53.0000  max=  13196.0000  media=   2173.0916  validos=98.1%
+           B11: min=      2.0000  max=  11470.0000  media=   1207.2474  validos=98.1%
+           B12: min=    -27.0000  max=  11173.0000  media=    649.6768  validos=98.0%
+
+--- outputs\rasters\Atitlan\Atitlan_2025-12-29.tif ---
+  Lago/Fecha      : Atitlan / 2025-12-29
+  Tamano          : 18.07 MB
+  Bandas (9)     : ['B02', 'B03', 'B04', 'B05', 'B07', 'B08', 'B8A', 'B11', 'B12']
+  Dimensiones     : 1380 x 876
+  CRS             : EPSG:32615
+  Transformacion  : [20.0, 0.0, 680160.0, 0.0, -20.0, 1631680.0]
+  Resolucion      : 20.0 x 20.0
+  Bounds          : [680160.0, 1614160.0, 707760.0, 1631680.0]
+  dtype / NoData  : float32 / -9999.0
+  Pixeles validos : 1,185,550 de 1,208,880 (98.07%)
+  Alineacion OK   : True
+  Estadisticas por banda:
+           B02: min=   -169.0000  max=  16159.0000  media=   1134.3752  validos=98.1%
+           B03: min=   -298.0000  max=  16408.0000  media=    955.0002  validos=98.1%
+           B04: min=   -586.0000  max=  16282.0000  media=    788.1607  validos=98.1%
+           B05: min=   -316.0000  max=  14462.0000  media=   1019.2835  validos=98.1%
+           B07: min=    121.0000  max=  15268.0000  media=   1971.2337  validos=98.1%
+           B08: min=     10.0000  max=  17676.0000  media=   1947.6508  validos=98.1%
+           B8A: min=     98.0000  max=  15835.0000  media=   2173.1562  validos=98.1%
+           B11: min=     28.0000  max=  12359.0000  media=   1302.8705  validos=98.1%
+           B12: min=    -14.0000  max=  11661.0000  media=    729.7608  validos=98.1%
+
+--- outputs\rasters\Atitlan\Atitlan_2026-02-12.tif ---
+  Lago/Fecha      : Atitlan / 2026-02-12
+  Tamano          : 17.94 MB
+  Bandas (9)     : ['B02', 'B03', 'B04', 'B05', 'B07', 'B08', 'B8A', 'B11', 'B12']
+  Dimensiones     : 1380 x 876
+  CRS             : EPSG:32615
+  Transformacion  : [20.0, 0.0, 680160.0, 0.0, -20.0, 1631680.0]
+  Resolucion      : 20.0 x 20.0
+  Bounds          : [680160.0, 1614160.0, 707760.0, 1631680.0]
+  dtype / NoData  : float32 / -9999.0
+  Pixeles validos : 1,185,537 de 1,208,880 (98.07%)
+  Alineacion OK   : True
+  Estadisticas por banda:
+           B02: min=    329.0000  max=   6535.0000  media=    802.9365  validos=98.1%
+           B03: min=    127.0000  max=   7225.0000  media=    686.0635  validos=98.1%
+           B04: min=   -441.0000  max=  10304.0000  media=    525.6844  validos=98.1%
+           B05: min=    165.0000  max=   5258.0000  media=    764.8265  validos=98.1%
+           B07: min=     28.0000  max=   7197.0000  media=   1742.8374  validos=98.1%
+           B08: min=     43.0000  max=   9402.0000  media=   1794.8425  validos=98.1%
+           B8A: min=     73.0000  max=   6821.0000  media=   1953.1703  validos=98.1%
+           B11: min=     15.0000  max=   8452.0000  media=   1231.6837  validos=98.1%
+           B12: min=    -12.0000  max=  13427.0000  media=    690.8866  validos=98.1%
+
+--- outputs\rasters\Atitlan\Atitlan_2026-03-24.tif ---
+  Lago/Fecha      : Atitlan / 2026-03-24
+  Tamano          : 17.78 MB
+  Bandas (9)     : ['B02', 'B03', 'B04', 'B05', 'B07', 'B08', 'B8A', 'B11', 'B12']
+  Dimensiones     : 1380 x 876
+  CRS             : EPSG:32615
+  Transformacion  : [20.0, 0.0, 680160.0, 0.0, -20.0, 1631680.0]
+  Resolucion      : 20.0 x 20.0
+  Bounds          : [680160.0, 1614160.0, 707760.0, 1631680.0]
+  dtype / NoData  : float32 / -9999.0
+  Pixeles validos : 1,185,553 de 1,208,880 (98.07%)
+  Alineacion OK   : True
+  Estadisticas por banda:
+           B02: min=    120.0000  max=  11538.0000  media=    997.6055  validos=98.1%
+           B03: min=    123.0000  max=  11289.0000  media=    879.4112  validos=98.1%
+           B04: min=    -94.0000  max=  13878.0000  media=    728.0791  validos=98.1%
+           B05: min=    -89.0000  max=  10901.0000  media=    962.3999  validos=98.1%
+           B07: min=   -348.0000  max=  11389.0000  media=   1955.6309  validos=98.1%
+           B08: min=     80.0000  max=  15812.0000  media=   1959.5081  validos=98.1%
+           B8A: min=    132.0000  max=  11690.0000  media=   2161.5228  validos=98.1%
+           B11: min=     13.0000  max=  11721.0000  media=   1505.3148  validos=98.1%
+           B12: min=    -87.0000  max=  11666.0000  media=    912.2215  validos=98.1%
+
+--- outputs\rasters\Atitlan\Atitlan_2026-04-13.tif ---
+  Lago/Fecha      : Atitlan / 2026-04-13
+  Tamano          : 17.96 MB
+  Bandas (9)     : ['B02', 'B03', 'B04', 'B05', 'B07', 'B08', 'B8A', 'B11', 'B12']
+  Dimensiones     : 1380 x 876
+  CRS             : EPSG:32615
+  Transformacion  : [20.0, 0.0, 680160.0, 0.0, -20.0, 1631680.0]
+  Resolucion      : 20.0 x 20.0
+  Bounds          : [680160.0, 1614160.0, 707760.0, 1631680.0]
+  dtype / NoData  : float32 / -9999.0
+  Pixeles validos : 1,185,554 de 1,208,880 (98.07%)
+  Alineacion OK   : True
+  Estadisticas por banda:
+           B02: min=     72.0000  max=   8636.0000  media=    842.3820  validos=98.1%
+           B03: min=   -134.0000  max=   9615.0000  media=    772.9510  validos=98.1%
+           B04: min=   -324.0000  max=  11779.0000  media=    596.3062  validos=98.1%
+           B05: min=    149.0000  max=   6843.0000  media=    893.3302  validos=98.1%
+           B07: min=    101.0000  max=  10430.0000  media=   2126.3475  validos=98.1%
+           B08: min=     17.0000  max=  10454.0000  media=   2148.8238  validos=98.1%
+           B8A: min=     73.0000  max=   8513.0000  media=   2340.9653  validos=98.1%
+           B11: min=     29.0000  max=  10008.0000  media=   1522.5892  validos=98.1%
+           B12: min=     15.0000  max=  11877.0000  media=    893.2314  validos=98.1%
+
+--- outputs\rasters\Atitlan\Atitlan_2026-04-28.tif ---
+  Lago/Fecha      : Atitlan / 2026-04-28
+  Tamano          : 18.05 MB
+  Bandas (9)     : ['B02', 'B03', 'B04', 'B05', 'B07', 'B08', 'B8A', 'B11', 'B12']
+  Dimensiones     : 1380 x 876
+  CRS             : EPSG:32615
+  Transformacion  : [20.0, 0.0, 680160.0, 0.0, -20.0, 1631680.0]
+  Resolucion      : 20.0 x 20.0
+  Bounds          : [680160.0, 1614160.0, 707760.0, 1631680.0]
+  dtype / NoData  : float32 / -9999.0
+  Pixeles validos : 1,185,554 de 1,208,880 (98.07%)
+  Alineacion OK   : True
+  Estadisticas por banda:
+           B02: min=    244.0000  max=  10867.0000  media=   1265.0350  validos=98.1%
+           B03: min=    159.0000  max=  10872.0000  media=   1146.2986  validos=98.1%
+           B04: min=    -34.0000  max=  12030.0000  media=   1000.3983  validos=98.1%
+           B05: min=    200.0000  max=  11916.0000  media=   1335.8970  validos=98.1%
+           B07: min=      3.0000  max=  12575.0000  media=   2484.0139  validos=98.1%
+           B08: min=    128.0000  max=  12481.0000  media=   2471.8921  validos=98.1%
+           B8A: min=    155.0000  max=  12963.0000  media=   2705.5668  validos=98.1%
+           B11: min=     58.0000  max=  10137.0000  media=   1854.0293  validos=98.1%
+           B12: min=      3.0000  max=  11212.0000  media=   1141.5203  validos=98.1%
+
+--- outputs\rasters\Atitlan\Atitlan_2026-07-22.tif ---
+  Lago/Fecha      : Atitlan / 2026-07-22
+  Tamano          : 18.04 MB
+  Bandas (9)     : ['B02', 'B03', 'B04', 'B05', 'B07', 'B08', 'B8A', 'B11', 'B12']
+  Dimensiones     : 1380 x 876
+  CRS             : EPSG:32615
+  Transformacion  : [20.0, 0.0, 680160.0, 0.0, -20.0, 1631680.0]
+  Resolucion      : 20.0 x 20.0
+  Bounds          : [680160.0, 1614160.0, 707760.0, 1631680.0]
+  dtype / NoData  : float32 / -9999.0
+  Pixeles validos : 1,185,553 de 1,208,880 (98.07%)
+  Alineacion OK   : True
+  Estadisticas por banda:
+           B02: min=   -231.0000  max=  10667.0000  media=    914.5330  validos=98.1%
+           B03: min=   -264.0000  max=  10316.0000  media=    837.2330  validos=98.1%
+           B04: min=   -441.0000  max=  13606.0000  media=    622.3238  validos=98.1%
+           B05: min=   -114.0000  max=   9499.0000  media=    895.4440  validos=98.1%
+           B07: min=   -606.0000  max=  13262.0000  media=   2434.6618  validos=98.1%
+           B08: min=   -235.0000  max=  11991.0000  media=   2382.3298  validos=98.1%
+           B8A: min=    106.0000  max=  11152.0000  media=   2668.9444  validos=98.1%
+           B11: min=     -6.0000  max=  11697.0000  media=   1488.0307  validos=98.1%
+           B12: min=      1.0000  max=  13272.0000  media=    811.4639  validos=98.1%

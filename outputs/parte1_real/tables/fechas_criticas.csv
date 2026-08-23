@@ -1,0 +1,6 @@
+lago,fecha,chl_media,umbral_pico,criterio
+Amatitlan,2026-04-28,9.922745028010869,8.709624358511228,media + 1 desviacion estandar del lago
+Amatitlan,2026-06-19,11.502725273852421,8.709624358511228,media + 1 desviacion estandar del lago
+Atitlan,2025-04-13,1.750594080572439,1.7296268167482305,media + 1 desviacion estandar del lago
+Atitlan,2026-04-13,2.0974569124703466,1.7296268167482305,media + 1 desviacion estandar del lago
+Atitlan,2026-04-28,1.8318385893665246,1.7296268167482305,media + 1 desviacion estandar del lago

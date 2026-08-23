@@ -131,15 +131,67 @@ def safe_div(a, b):
     with np.errstate(divide='ignore', invalid='ignore'):
         return np.divide(a, b, out=np.zeros_like(a, dtype=float), where=(b != 0))
 
-def normalize_band(band_array, scale=10000.0):
+def normalize_band(band_array, scale=10000.0, dn_threshold=2.0, nodata=-9999.0):
     """
-    Convierte bandas en enteros (0-10000) a reflectancia (0-1).
-    Si ya están en float 0-1, las devuelve sin cambios.
+    Convierte una banda a reflectancia (0-1 nominal).
+
+    Casos cubiertos:
+    - Enteros: siempre son numeros digitales (DN) -> se dividen por `scale`.
+    - Float cuya magnitud tipica supera `dn_threshold`: son DN almacenados como
+      float. Es el caso de los GeoTIFF descargados con openEO desde Copernicus
+      Data Space, que se escriben en float32 conservando los DN.
+    - Float ya en rango de reflectancia: se devuelven sin cambios.
+
+    La version anterior solo dividia cuando el dtype era entero, por lo que
+    dejaba sin escalar los rasteres float32 con DN y producia indices y
+    clorofila erroneos. La deteccion por magnitud evita tanto ese fallo como la
+    doble normalizacion.
+
+    La reflectancia TOA vive en [0, ~1.5]; una mediana por encima de
+    `dn_threshold` solo es compatible con DN, asi que el criterio no puede
+    confundir ambos casos.
     """
-    if band_array.dtype.kind in 'iu':  # integer
-        return band_array.astype(np.float32) / scale
-    else:
-        return band_array.astype(np.float32)
+    arr = band_array.astype(np.float32)
+
+    if band_array.dtype.kind in 'iu':  # entero: siempre DN
+        return arr / scale
+
+    finitos = arr[np.isfinite(arr) & (arr != nodata)]
+    if finitos.size == 0:
+        return arr
+
+    if float(np.median(np.abs(finitos))) > dn_threshold:
+        return arr / scale
+    return arr
+
+
+def reflectance_scale_report(band_array, scale=10000.0, dn_threshold=2.0,
+                             nodata=-9999.0):
+    """
+    Diagnostica la escala de una banda sin modificarla.
+
+    Devuelve un diccionario con la mediana observada, si se aplicaria escala y
+    el rango resultante. Sirve para verificar la transformacion y para dejar
+    constancia de que la escala se aplico exactamente una vez.
+    """
+    arr = np.asarray(band_array, dtype=np.float64)
+    finitos = arr[np.isfinite(arr) & (arr != nodata)]
+    if finitos.size == 0:
+        return {"n_validos": 0, "es_dn": False, "escala_aplicada": 1.0}
+
+    mediana = float(np.median(np.abs(finitos)))
+    es_dn = (np.asarray(band_array).dtype.kind in 'iu') or (mediana > dn_threshold)
+    factor = (1.0 / scale) if es_dn else 1.0
+    resultado = finitos * factor
+    return {
+        "n_validos": int(finitos.size),
+        "mediana_original": mediana,
+        "es_dn": bool(es_dn),
+        "escala_aplicada": factor,
+        "min_resultante": float(resultado.min()),
+        "mediana_resultante": float(np.median(resultado)),
+        "max_resultante": float(resultado.max()),
+    }
 
 def NDVI(B04, B08):
     """Normalized Difference Vegetation Index: (B08 - B04) / (B08 + B04)."""

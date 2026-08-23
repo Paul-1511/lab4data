@@ -7,3 +7,9 @@ pandas
 nbformat
 nbclient
 ipykernel
+pyarrow
+pyproj
+shapely
+seaborn
+requests
+tqdm

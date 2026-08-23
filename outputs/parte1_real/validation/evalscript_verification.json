@@ -1,0 +1,50 @@
+{
+  "pixeles_comparados": 490,
+  "diferencias_maximas": {
+    "ndvi": 0.0,
+    "ndwi": 0.0,
+    "fai": 0.0,
+    "ndci": 0.0,
+    "chl": 0.0
+  },
+  "discrepancias_mascara_agua": 0,
+  "tolerancia": 1e-06,
+  "coincide": true,
+  "ejemplo": {
+    "fila": 40,
+    "col": 77,
+    "bandas": {
+      "B02": 0.1218,
+      "B03": 0.1079,
+      "B04": 0.1084,
+      "B05": 0.1336,
+      "B07": 0.1735,
+      "B08": 0.1372,
+      "B8A": 0.1916,
+      "B11": 0.1911,
+      "B12": 0.1419
+    },
+    "evalscript": {
+      "ndvi": 0.11726383,
+      "ndwi": -0.11954303,
+      "mndwi": -0.27826087,
+      "aweish": -0.136375,
+      "aweinsh": -0.892625,
+      "dbsi": 0.16099704,
+      "water": 0.0,
+      "fai": 0.016012,
+      "ndci": 0.10413221,
+      "chl": 5.06971954,
+      "cyano": null
+    },
+    "local": {
+      "ndvi": 0.11726383,
+      "ndwi": -0.11954303,
+      "fai": 0.016012,
+      "ndci": 0.10413221,
+      "chl": 5.06971954,
+      "water": false
+    }
+  },
+  "escena": "Amatitlan 2025-01-28"
+}

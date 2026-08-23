@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "Lago_Atitlan",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "name": "Lago Atitlán" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ -91.07151, 14.5948 ], [ -91.07151, 14.750979 ], [ -91.326256, 14.750979 ], [ -91.326256, 14.5948 ], [ -91.07151, 14.5948 ] ] ] } }
+]
+}

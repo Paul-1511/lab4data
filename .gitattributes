@@ -1,0 +1,4 @@
+*.pdf binary
+*.png binary
+*.tif binary
+*.parquet binary

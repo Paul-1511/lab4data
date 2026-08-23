@@ -1,366 +1,334 @@
-# Monitoreo Satelital de Floraciones de Cianobacteria
+# Monitoreo Satelital de Cianobacterias
 ## Lago de Atitlán y Lago de Amatitlán, Guatemala
 
-**Laboratorio 4 — Análisis de Datos Geoespaciales**
-**Universidad del Valle de Guatemala (UVG)**
+**Laboratorio 4, Parte 1 — Análisis de Datos Geoespaciales**
+**Universidad del Valle de Guatemala (UVG) — CC3084 Data Science**
 **Autor:** myee
-**Fecha:** 16 de agosto de 2026
-**Período analizado:** 11 fechas oficiales por lago, entre enero de 2025 y julio de 2026
-**Sensor:** Sentinel-2 (Copernicus, ESA) — colección L1C
+**Fecha:** 23 de agosto de 2026
+**Datos:** 22 imágenes Sentinel-2 L1C reales (11 fechas por lago, enero 2025 – julio 2026)
 
 ---
 
-> ### ⚠ Nota obligatoria sobre la procedencia de los datos
->
-> **Los valores numéricos presentados en este informe fueron generados por el módulo de
-> simulación reproducible del pipeline (`synthetic_bands`), no por imágenes Sentinel-2
-> descargadas.** La ejecución se realizó sin conexión al backend de Copernicus porque las
-> librerías `rasterio` y `openeo` no estaban instaladas y la variable `RUN_OPENEO` no fue
-> activada.
->
-> En consecuencia:
->
-> - Las cifras demuestran que **el pipeline funciona de extremo a extremo**, pero **no
->   constituyen evidencia del estado ecológico real** de Atitlán ni de Amatitlán.
-> - **No deben citarse, difundirse ni usarse para decisiones de gestión ambiental** en su
->   estado actual.
-> - Las áreas reportadas en hectáreas asumen píxeles de 10 m sobre una malla simulada de
->   96 × 96; con rasters reales, la superficie corresponderá a la extensión verdadera de
->   cada lago (Atitlán ≈ 13,000 ha; Amatitlán ≈ 1,500 ha).
->
-> **Para obtener resultados válidos:** instalar `rasterio` y `openeo`, exportar
-> `RUN_OPENEO=1` con credenciales de Copernicus y re-ejecutar el cuaderno. La estructura del
-> informe, las figuras y las tablas se regeneran automáticamente con los valores reales.
+## Nota sobre esta versión del informe
+
+Una versión anterior de este informe se elaboró con **datos simulados**, porque en aquel
+momento no se habían descargado las imágenes satelitales. Aquellas cifras no describían el
+estado real de los lagos.
+
+**Este informe reemplaza por completo aquellas cifras.** Todos los números, mapas y
+gráficas provienen de **22 imágenes reales de Sentinel-2** descargadas del programa
+Copernicus de la Agencia Espacial Europea. Los archivos de la versión simulada se
+conservan en el repositorio únicamente como registro del desarrollo, marcados como
+obsoletos.
 
 ---
 
-## 1. Introducción y Objetivos
+## 1. ¿Qué se hizo y por qué?
 
-Las floraciones algales nocivas (FAN), causadas principalmente por cianobacterias, constituyen
-una de las amenazas más visibles y persistentes para los cuerpos de agua dulce de Guatemala.
-Estos microorganismos proliferan cuando coinciden temperaturas cálidas, aguas poco turbulentas
-y un exceso de nutrientes —sobre todo nitrógeno y fósforo— procedentes de aguas residuales sin
-tratar, fertilizantes agrícolas y escorrentía urbana. Sus consecuencias van más allá del
-deterioro estético: reducen el oxígeno disuelto, provocan mortandad de peces, pueden liberar
-cianotoxinas peligrosas para la salud humana y animal, y comprometen el turismo y el
-abastecimiento de agua del que dependen las comunidades ribereñas.
+Las **cianobacterias** son microorganismos que viven de forma natural en lagos y ríos.
+Cuando el agua recibe demasiados nutrientes —principalmente por aguas residuales sin
+tratar, fertilizantes agrícolas y escorrentía urbana— y la temperatura es alta, se
+multiplican de forma explosiva. A eso se le llama **floración algal**. Sus efectos van más
+allá de manchar el agua: consumen el oxígeno, pueden matar peces, algunas especies liberan
+toxinas peligrosas para personas y animales, y afectan al turismo y al abastecimiento de
+agua de las comunidades.
 
-El **Lago de Atitlán**, de origen volcánico y gran profundidad, sufrió en 2009 una floración
-masiva que puso en evidencia su vulnerabilidad pese a su aparente pureza. El **Lago de
-Amatitlán**, mucho más somero y ubicado aguas abajo de la zona metropolitana de Guatemala,
-recibe una carga contaminante sostenida que lo mantiene en un estado de eutrofización crónica.
-Ambos casos exigen un monitoreo continuo, algo difícil de sostener únicamente con muestreos de
-campo por su costo, su cobertura limitada y su baja frecuencia.
+Medir esto con lanchas y muestras de laboratorio es caro y solo cubre unos pocos puntos.
+Los **satélites** ofrecen una alternativa complementaria: observan todo el lago a la vez,
+cada pocos días, y de forma gratuita.
 
-La **teledetección satelital** ofrece una alternativa complementaria y poderosa: permite
-observar la totalidad de la superficie de un lago de forma periódica, retrospectiva y sin
-costo de acceso a los datos. El satélite Sentinel-2 del programa Copernicus, con resolución de
-10–20 metros y revisita de aproximadamente cinco días, resulta particularmente adecuado para
-detectar y seguir estas floraciones.
+Este trabajo usa el satélite **Sentinel-2**, que fotografía la Tierra en varios colores,
+incluidos algunos que el ojo humano no ve. La clorofila —el pigmento verde de las algas—
+refleja la luz de una manera muy característica en la zona del rojo, y eso permite
+estimar cuánta hay en el agua.
 
-### Objetivos
+### Lo que este informe puede y no puede decir
 
-1. Estimar la concentración de clorofila-a como indicador indirecto (*proxy*) de la biomasa de
-   cianobacteria en Atitlán y Amatitlán a partir de imágenes Sentinel-2.
-2. Analizar la **distribución espacial** de las floraciones e identificar las zonas de mayor
-   acumulación dentro de cada lago.
-3. Evaluar la **relación estadística** entre la vegetación circundante (NDVI), la señal del
-   agua (NDWI) y la proliferación de cianobacteria.
-4. Cuantificar la **extensión del área afectada** que supera el umbral crítico de alerta de
-   **20 µg/L** de clorofila-a.
-5. Identificar **patrones estacionales** a lo largo de las 11 fechas analizadas, como base para
-   un sistema de alerta temprana.
+> **Importante.** Lo que se presenta son **estimaciones hechas desde el espacio**, no
+> mediciones de laboratorio. En este trabajo **no se tomó ninguna muestra de agua** para
+> comprobarlas. Sirven para ver **dónde y cuándo** cambia la situación, y para comparar
+> zonas y fechas entre sí. No sustituyen a un análisis de laboratorio ni permiten afirmar
+> que exista toxicidad, porque la clorofila mide biomasa de algas, no toxinas.
 
 ---
 
-## 2. Metodología General
+## 2. Cómo se obtuvieron los datos
 
-### 2.1 Selección de imágenes
+**Origen.** Se descargaron 22 imágenes del satélite Sentinel-2 (nivel L1C) desde
+Copernicus Data Space, usando las 11 fechas oficiales por lago que fijó el enunciado del
+laboratorio, todas con poca nubosidad sobre el lago.
 
-Se trabajó con 11 fechas oficiales por lago, seleccionadas por su baja nubosidad (entre 0.01 %
-y 13 % de cobertura de nubes) para garantizar observaciones limpias de la superficie del agua.
-El área de análisis se delimitó mediante un rectángulo geográfico (*bounding box*) que encierra
-cada lago, lo que reduce el volumen de descarga y asegura que todos los análisis se realicen
-sobre la misma base de imágenes.
+**Preparación.** De cada imagen se tomaron solo los 9 canales de color necesarios. Todas
+se colocaron en un mismo sistema de coordenadas (UTM 15N) y a una misma resolución de
+**20 metros por píxel**: cada píxel representa un cuadrado de 20 × 20 m, es decir
+**400 m² = 0.04 hectáreas**.
 
-### 2.2 Bandas espectrales utilizadas
+**Separar agua de tierra.** Los archivos de contorno disponibles eran rectángulos, no la
+forma real de la costa. Por eso el agua se identifica con un **índice de detección de agua
+(WBI)** calculado desde la propia imagen. El resultado coincide bien con la realidad:
 
-El análisis se apoya en la respuesta espectral característica de la vegetación acuática y del
-agua. Se emplearon nueve bandas de Sentinel-2, entre ellas el azul, el verde, el rojo, el
-*borde rojo* (705 y 783 nm), el infrarrojo cercano y el infrarrojo de onda corta. La banda del
-borde rojo es especialmente relevante: la clorofila refleja intensamente en esa región del
-espectro, lo que permite distinguir el agua con algas del agua limpia.
+| Lago | Superficie de agua detectada | Superficie real aproximada |
+|---|---|---|
+| Atitlán | 122.1 km² | ~130 km² |
+| Amatitlán | 14.5 km² | ~15 km² |
 
-### 2.3 Máscara de agua (Water Body Index, WBI)
+Esta coincidencia es una comprobación de que el método está funcionando correctamente.
 
-Antes de estimar la clorofila fue indispensable separar el agua del resto del paisaje. De lo
-contrario, la vegetación terrestre de las laderas —que también contiene clorofila— contaminaría
-los resultados. Para ello se aplicó un índice compuesto de detección de agua que combina varios
-criterios espectrales (MNDWI, NDWI, AWEI y NDVI), acompañado de un filtro adicional que descarta
-suelos desnudos y superficies urbanas que pueden confundirse con agua. **Todos los análisis
-posteriores se realizaron exclusivamente sobre los píxeles clasificados como agua.**
-
-### 2.4 Índices calculados
-
-- **NDVI (Índice de Vegetación de Diferencia Normalizada):** mide el vigor de la vegetación.
-  En este estudio caracteriza la cobertura vegetal del entorno del lago y, dentro del cuerpo de
-  agua, ayuda a detectar acumulaciones superficiales de algas flotantes.
-- **NDWI (Índice de Agua de Diferencia Normalizada):** resalta la presencia de agua y permite
-  evaluar la transparencia y el estado de la lámina de agua.
-- **NDCI (Índice de Clorofila de Diferencia Normalizada):** aprovecha el contraste entre el rojo
-  y el borde rojo para detectar clorofila en el agua.
-- **FAI (Índice de Algas Flotantes):** identifica las natas y acumulaciones de algas que flotan
-  en la superficie.
-- **Clorofila-a (µg/L) — Índice de Cianobacteria:** se estimó a partir del NDCI mediante una
-  función de calibración polinómica derivada del algoritmo CyanoLakes para Sentinel-2 L1C. Este
-  valor, expresado en microgramos por litro, es el indicador principal del informe.
-
-### 2.5 Umbral de alerta
-
-Se adoptó un **umbral crítico de 20 µg/L de clorofila-a**. Por encima de este valor, un cuerpo
-de agua se considera en condición eutrófica avanzada, con riesgo relevante de floración
-perceptible y de afectación a los usos recreativos y al abastecimiento. Este umbral se emplea de
-forma consistente en todos los mapas, gráficos y cálculos de área del informe.
-
-### 2.6 Herramientas
-
-El procesamiento se implementó en Python, con acceso a los datos mediante la API openEO de
-Copernicus. Las figuras estáticas se produjeron con Matplotlib y Seaborn, y el mapa interactivo
-con Folium. Todo el flujo es reproducible desde el cuaderno del laboratorio.
+**Cálculo de la clorofila.** Se usó el script oficial *Cyanobacteria Chlorophyll-a NDCI
+L1C* de Sentinel Hub, el que pedía el enunciado. Para asegurar que se reprodujo bien, se
+comparó el cálculo propio contra el original **píxel por píxel en 500 puntos**: la
+diferencia fue **exactamente cero**.
 
 ---
 
-## 3. Resultados y Discusión
+## 3. Resultados
 
-> Recordatorio: los valores de esta sección provienen de la simulación reproducible descrita en
-> la nota inicial. La interpretación metodológica es válida; las magnitudes deben confirmarse con
-> imágenes reales.
+### 3.1 Cómo cambió la situación a lo largo del tiempo
 
-### 3.1 Análisis Espacial — Distribución de las floraciones (Actividad 5)
+![Evolución de la clorofila-a promedio en cada lago a lo largo de las 11 fechas. La banda sombreada indica la variación dentro del lago; los círculos rojos marcan las fechas críticas.](outputs/parte1_real/figures/actividad4_evolucion_temporal.png)
 
-Para cada lago se compararon automáticamente las dos fechas extremas de la serie: aquella con la
-menor concentración promedio y aquella con la mayor. Esta comparación lado a lado permite
-apreciar de un vistazo la magnitud del cambio y, sobre todo, **dónde** se concentra el problema.
+**Los dos lagos están en situaciones muy distintas.**
 
-| Lago | Fecha de menor floración | Promedio | Fecha de mayor floración | Promedio |
-|------|--------------------------|----------|--------------------------|----------|
-| Atitlán | 21 de noviembre de 2025 | 20.24 µg/L | 13 de mayo de 2025 | 91.74 µg/L |
-| Amatitlán | 24 de noviembre de 2025 | 28.53 µg/L | 19 de junio de 2026 | 155.55 µg/L |
+| Indicador | Amatitlán | Atitlán |
+|---|---|---|
+| Clorofila-a promedio del período | 6.30 µg/L | 1.11 µg/L |
+| Mediana del período | 4.88 µg/L | 1.12 µg/L |
+| Variación entre fechas | 2.41 µg/L | 0.62 µg/L |
+| Superficie de agua media | 14.5 km² | 122.1 km² |
+| Fecha con mayor concentración | 19 jun 2026 | 13 abr 2026 |
+| Fecha con menor concentración | 2 feb 2026 | 21 nov 2025 |
 
-En ambos lagos la diferencia entre el mejor y el peor escenario es de **más de cuatro veces**,
-lo que confirma que la condición del agua no es estática: atraviesa ciclos marcados de deterioro
-y recuperación parcial a lo largo del año. La escala de color de los mapas es común a las dos
-fechas —verde para agua en buen estado y rojo para concentraciones elevadas—, de modo que la
-comparación visual es directa y honesta.
+Amatitlán presenta concentraciones **entre cinco y seis veces mayores** que Atitlán en
+promedio, y una **tendencia al alza** hacia el final del período: pasa de unos 4.4 µg/L en
+enero de 2025 a 11.5 µg/L en junio de 2026.
 
-[Insertar aquí la imagen: outputs/act5_comparativo_Atitlan.png]
+Atitlán se mantiene en valores bajos durante todo el período (medias entre 0.22 y
+2.10 µg/L), propios de un lago de aguas limpias.
 
-*Figura 1. Lago de Atitlán: comparación de la concentración de cianobacteria entre la fecha de
-menor floración (21/11/2025) y la de mayor floración (13/05/2025).*
+**Fechas críticas** (calculadas automáticamente, no elegidas a mano; corresponden a las
+fechas que superan el promedio del lago más una desviación estándar):
 
-[Insertar aquí la imagen: outputs/act5_comparativo_Amatitlan.png]
+| Lago | Fechas críticas detectadas |
+|---|---|
+| Amatitlán | 28 abr 2026 y 19 jun 2026 |
+| Atitlán | 13 abr 2025, 13 abr 2026 y 28 abr 2026 |
 
-*Figura 2. Lago de Amatitlán: comparación entre la fecha de menor floración (24/11/2025) y la de
-mayor floración (19/06/2026).*
+**Patrón estacional.** En ambos lagos los valores más altos se concentran entre **abril y
+junio**, al final de la estación seca y comienzo de las lluvias, y los más bajos en
+**noviembre y diciembre**.
 
-**Diferencia entre ambos lagos.** Amatitlán presenta concentraciones sistemáticamente superiores
-a las de Atitlán en todas las fechas analizadas (promedio general de 97.04 µg/L frente a
-60.65 µg/L). Esta brecha es coherente con la realidad conocida de ambos cuerpos de agua:
-Amatitlán es más somero, de menor volumen y recibe directamente la carga de nutrientes del área
-metropolitana, mientras que Atitlán posee una profundidad y un volumen que le confieren mayor
-capacidad de amortiguación.
+![Relación entre el mes del año y la concentración observada, y entre el mes y la superficie afectada.](outputs/parte1_real/figures/actividad8_patron_estacional.png)
 
-**Mapa interactivo.** Como complemento a los mapas estáticos se generó una visualización
-navegable sobre cartografía base, que permite acercarse a sectores específicos del lago,
-activar o desactivar la capa de cianobacteria y consultar la escala de concentración. Es la
-herramienta recomendada para socializar los hallazgos con comunidades, autoridades locales y
-organizaciones de conservación, ya que no requiere conocimientos técnicos para su uso.
+> **Cautela.** Que las floraciones coincidan con ciertos meses **no demuestra** que la
+> estación sea la causa. Para afirmar eso harían falta datos de nutrientes, temperatura
+> del agua y caudales de los ríos que este trabajo no incluye. Los datos climáticos de
+> referencia disponibles son **promedios históricos por mes**, no las condiciones del día
+> concreto de cada fotografía satelital.
 
-- Lago de Atitlán: `outputs/act5_mapa_interactivo_Atitlan.html`
-- Lago de Amatitlán: `outputs/act5_mapa_interactivo_Amatitlan.html`
+### 3.2 Dónde se concentra el problema dentro de cada lago
 
----
+![Lago de Atitlán: clorofila-a en las 11 fechas, todas con la misma escala de color para poder compararlas.](outputs/parte1_real/maps/actividad5_mapas_por_fecha_Atitlan.png)
 
-### 3.2 Correlaciones Ecológicas (Actividad 6)
+![Lago de Amatitlán: clorofila-a en las 11 fechas, misma escala de color.](outputs/parte1_real/maps/actividad5_mapas_por_fecha_Amatitlan.png)
 
-Se calculó la matriz de correlación de Pearson entre el NDVI, el NDWI y el índice de
-cianobacteria, considerando únicamente los píxeles de agua y agregando las 11 fechas de cada
-lago. Trabajar con la serie completa —y no con una sola imagen— otorga mayor solidez estadística
-al resultado. El coeficiente de Pearson varía entre −1 (relación inversa perfecta) y +1
-(relación directa perfecta); los valores cercanos a 0 indican ausencia de relación lineal.
+Los valores altos **no se reparten por igual**. Se concentran en las orillas y en las
+zonas menos profundas, sobre todo cerca de donde desembocan los ríos, mientras que el
+agua abierta y profunda se mantiene limpia.
+
+![Lago de Amatitlán: comparación entre su mejor y su peor fecha, y mapa de cuánto cambió cada zona.](outputs/parte1_real/maps/actividad5_comparativo_min_max_Amatitlan.png)
+
+El mapa de diferencia (derecha) muestra que el empeoramiento tampoco es uniforme: crece
+sobre todo en las mismas zonas someras que ya estaban afectadas.
+
+También se generaron **mapas interactivos navegables** (`outputs/parte1_real/maps/*.html`)
+que permiten acercarse a cualquier zona del lago sobre un mapa base real. Son la
+herramienta recomendada para conversar con comunidades y autoridades locales.
+
+### 3.3 Zonas que se repiten
+
+![Lago de Amatitlán: por cada punto del lago, en cuántas de las 11 fechas se superó cada umbral.](outputs/parte1_real/maps/actividad8_persistencia_Amatitlan.png)
+
+Estos mapas cuentan, para cada punto del lago, **en cuántas de las 11 fechas** se superó
+cada nivel. Las zonas que aparecen repetidamente son las **áreas de acumulación
+persistente**: son las que conviene priorizar para muestreo de campo y para medidas de
+control, en lugar de repartir los recursos por igual en todo el lago.
+
+### 3.4 Relación entre los distintos indicadores
+
+![Relación entre los índices calculados y la clorofila-a, en cada lago.](outputs/parte1_real/figures/actividad6_correlaciones.png)
 
 | Relación | Atitlán | Amatitlán | Lectura |
-|----------|---------|-----------|---------|
-| NDVI ↔ NDWI | −0.695 | −0.691 | Correlación negativa fuerte |
-| NDVI ↔ Cianobacteria | +0.279 | +0.222 | Correlación positiva débil |
-| NDWI ↔ Cianobacteria | +0.131 | +0.157 | Correlación muy débil |
+|---|---|---|---|
+| NDWI ↔ clorofila-a | −0.60 | −0.61 | Negativa: a más algas, menos señal de agua limpia |
+| NDVI ↔ clorofila-a | +0.62 | +0.76 | Positiva: las manchas densas de algas se parecen a vegetación |
+| NDCI ↔ clorofila-a | +0.89 | +0.78 | ⚠️ Ver advertencia |
+| NDVI ↔ NDWI | −0.94 | −0.93 | La esperada; confirma que el procesamiento funciona |
 
-[Insertar aquí la imagen: outputs/act6_correlacion_Atitlan.png]
+> ⚠️ **La relación entre NDCI y clorofila-a no es un descubrimiento.** La clorofila se
+> **calcula a partir del** NDCI mediante una fórmula. Que estén muy relacionados es una
+> consecuencia matemática inevitable, no una observación sobre el lago. Presentarla como
+> hallazgo ecológico sería un razonamiento circular.
+>
+> La única relación **realmente informativa** es la del NDWI, porque ese índice no
+> interviene en el cálculo de la clorofila.
 
-*Figura 3. Matriz de correlación de Pearson para el Lago de Atitlán.*
+### 3.5 Comparación entre los dos lagos
 
-[Insertar aquí la imagen: outputs/act6_correlacion_Amatitlan.png]
+![Comparación entre lagos: concentración promedio, variabilidad y superficie afectada.](outputs/parte1_real/figures/actividad7_comparacion_lagos.png)
 
-*Figura 4. Matriz de correlación de Pearson para el Lago de Amatitlán.*
+**Intensidad.** Amatitlán tiene concentraciones mucho más altas de forma sostenida.
 
-**Interpretación.** La correlación negativa fuerte entre NDVI y NDWI (cercana a −0.7 en ambos
-lagos) es el resultado esperado y funciona como control de calidad del procesamiento: confirma
-que los índices están discriminando correctamente entre superficies con vegetación y superficies
-de agua, tal como describe la teoría.
+**Frecuencia y extensión.** Con el umbral de 25 µg/L, Amatitlán llega a tener hasta un
+**6.10 %** de su superficie afectada en una fecha, mientras que en Atitlán el máximo es
+**0.002 %**.
 
-La relación positiva y débil entre el NDVI y la cianobacteria (+0.22 a +0.28) sugiere que,
-dentro del cuerpo de agua, los sectores con mayor señal vegetal tienden a coincidir con mayor
-concentración de clorofila. Esto es ecológicamente razonable, ya que las acumulaciones densas de
-algas en superficie se comportan espectralmente de forma parecida a la vegetación. No obstante,
-la magnitud del coeficiente indica que **el NDVI por sí solo no es un sustituto adecuado del
-índice de cianobacteria**: sirve como señal de apoyo, nunca como indicador principal.
+**Variabilidad.** Amatitlán cambia más entre fechas; su estado es menos estable.
 
-La correlación prácticamente nula entre NDWI y cianobacteria refuerza una idea central: la
-simple presencia de agua no anticipa su calidad. **Un lago puede verse perfectamente saludable
-desde una perspectiva general y estar atravesando una floración significativa**, lo que
-justifica la necesidad de índices específicos como los aquí empleados.
+**Posibles explicaciones** (hipótesis razonables, **no demostradas** con estos datos):
 
-Conviene subrayar una limitación metodológica: la correlación describe asociación estadística,
-no causalidad. Estos coeficientes no permiten afirmar que la vegetación circundante *provoque*
-las floraciones. Establecer esa relación exigiría incorporar datos de nutrientes, caudales,
-temperatura del agua y usos del suelo en las cuencas.
-
----
-
-### 3.3 Análisis Exploratorio y Extensión Temporal (Actividad 8)
-
-#### Extensión del área afectada
-
-Se calculó, para cada lago y cada fecha, el porcentaje de la superficie de agua cuya
-concentración de clorofila-a supera el umbral crítico de 20 µg/L.
-
-| Lago | Área afectada mínima | Área afectada máxima | Fechas sobre el umbral |
-|------|----------------------|----------------------|------------------------|
-| Atitlán | 39.40 % (21/11/2025) | 97.88 % (28/04/2026) | 11 de 11 |
-| Amatitlán | 65.79 % (24/11/2025) | 97.85 % (15/04/2025) | 11 de 11 |
-
-El resultado más relevante es que **en ninguna de las 22 observaciones el área afectada
-descendió por debajo del 39 %**. Incluso en las fechas más favorables, una porción sustancial de
-la superficie de ambos lagos permanece por encima del umbral de alerta. Amatitlán muestra
-además un piso mucho más alto: su mejor escenario (65.79 %) es peor que el peor escenario de
-Atitlán, lo que apunta a una condición de eutrofización persistente más que episódica.
-
-Debe advertirse que la magnitud de estos porcentajes —cercana al 97 % en la mayoría de las
-fechas— resulta anómalamente alta y homogénea. Es un comportamiento atribuible al generador de
-datos sintéticos y no debe interpretarse como un hallazgo ecológico. La verificación con
-imágenes reales es imprescindible antes de emitir cualquier conclusión sobre la extensión
-verdadera de las floraciones.
-
-El detalle completo por fecha, incluyendo superficie estimada en hectáreas y número de píxeles,
-se encuentra en el archivo `outputs/act8_extension_espacial.csv`.
-
-#### Patrones estacionales
-
-Los diagramas de caja y los histogramas superpuestos permiten comparar no solo el promedio, sino
-la **distribución completa** de valores en cada fecha: su dispersión, su asimetría y la presencia
-de sectores especialmente afectados.
-
-[Insertar aquí la imagen: outputs/act8_distribuciones_Atitlan.png]
-
-*Figura 5. Lago de Atitlán: distribución de la concentración de cianobacteria en las 11 fechas
-analizadas. La línea roja indica el umbral de alerta de 20 µg/L.*
-
-[Insertar aquí la imagen: outputs/act8_distribuciones_Amatitlan.png]
-
-*Figura 6. Lago de Amatitlán: distribución de la concentración de cianobacteria en las 11 fechas
-analizadas.*
-
-Se identifica un patrón estacional consistente en ambos lagos:
-
-- **Período crítico (abril a julio).** Las concentraciones máximas se concentran en la
-  transición entre la estación seca y el inicio de las lluvias. Atitlán alcanza su punto más
-  alto el 13 de mayo de 2025 (91.74 µg/L) y Amatitlán el 19 de junio de 2026 (155.55 µg/L).
-  Este comportamiento es compatible con el arrastre de nutrientes por las primeras lluvias
-  intensas sobre suelos secos, sumado a temperaturas elevadas del agua.
-- **Período de recuperación parcial (noviembre a diciembre).** Los valores mínimos aparecen al
-  final de la temporada lluviosa: 20.24 µg/L en Atitlán (21/11/2025) y 28.53 µg/L en Amatitlán
-  (24/11/2025). Aun así, ambos permanecen en el umbral de alerta o por encima de él.
-- **Fase de ascenso (enero a marzo).** Se observa un incremento progresivo que anticipa el pico
-  de la estación seca-lluviosa, y que constituye la ventana natural para activar medidas
-  preventivas.
-
-La amplitud de las cajas revela además que las floraciones **no son homogéneas dentro del lago**:
-en las fechas críticas la dispersión aumenta notablemente, señal de que ciertos sectores
-—típicamente bahías cerradas y desembocaduras de ríos— concentran el problema mientras otros
-mantienen mejores condiciones. Esta heterogeneidad es una oportunidad de gestión, pues permite
-focalizar los recursos de intervención en las áreas de mayor impacto.
+- **Profundidad y volumen.** Atitlán es un lago volcánico muy profundo; Amatitlán es
+  somero. Un volumen grande diluye los nutrientes.
+- **Presión urbana.** Amatitlán recibe las descargas de la cuenca del área metropolitana
+  de Guatemala a través del río Villalobos. Atitlán no tiene una presión equivalente.
+- **Tamaño.** Atitlán tiene más de ocho veces la superficie de Amatitlán.
 
 ---
 
-## 4. Conclusiones y Recomendaciones
+## 4. Los cuatro niveles de alerta evaluados
+
+Se evaluaron cuatro umbrales. **No significan lo mismo** y por eso conviene no
+intercambiarlos:
+
+| Nivel | Qué significa | Respaldo |
+|---|---|---|
+| **8 µg/L** | Comienzo de la condición **eutrófica**: el lago empieza a tener exceso de nutrientes | Frontera mesotrófico → eutrófico, OECD (1982) |
+| **20 µg/L** | Valor usado en la primera versión de este informe. Está dentro de la banda eutrófica y del rango de Alerta 1 de la OMS (12–24) | **No es una frontera publicada por sí misma** |
+| **25 µg/L** | Paso a condición **hipertrófica**: lago claramente degradado | Frontera eutrófico → hipertrófico, OECD (1982); coincide con el techo de la Alerta 1 de la OMS (24 µg/L) |
+| **50 µg/L** | Escenario severo, usado como comprobación | **No aparece** como valor de clorofila en OECD 1982 ni en las guías de la OMS 2021 |
+
+### Resultados con cada nivel
+
+| Nivel | Área afectada total | % del agua | Amatitlán | Atitlán |
+|---|---|---|---|---|
+| 8 µg/L | 2,405.8 ha | 1.601 % | 14.51 % | 0.064 % |
+| 20 µg/L | 393.3 ha | 0.262 % | 2.444 % | 0.0019 % |
+| 25 µg/L | 207.8 ha | 0.138 % | 1.296 % | 0.0004 % |
+| 50 µg/L | 24.3 ha | 0.016 % | 0.151 % | 0.0001 % |
+
+**Recomendación.** Se propone **25 µg/L** como nivel de referencia principal, porque es el
+único de los cuatro que corresponde a una **frontera publicada** por dos fuentes
+independientes (OECD y OMS) y marca el paso a un estado claramente degradado. La elección
+se hizo **por su significado ambiental**, no por conveniencia estadística.
+
+Para el análisis de la Parte 2 se recomienda además usar **8 µg/L** como comprobación,
+porque es el único nivel con suficiente cantidad de datos en ambos lagos.
+
+---
+
+## 5. Limitaciones
+
+Estas limitaciones son importantes y deben acompañar cualquier uso de estos resultados:
+
+1. **No hay validación en campo.** No se tomaron muestras de agua. Las cifras son
+   estimaciones satelitales sin comprobación de laboratorio.
+
+2. **El algoritmo tiene un error grande.** Su documentación reporta un error porcentual
+   medio del **42.3 %** y un error cuadrático relativo del **95.8 %**. Además fue
+   calibrado para una especie concreta (*Microcystis aeruginosa*) y sobre datos
+   **simulados**, no sobre muestras de estos lagos.
+
+3. **Buena parte de las estimaciones de Atitlán quedan fuera del rango calibrado.** El
+   algoritmo está calibrado entre 1 y 60 µg/L. En Atitlán, el **45 %** de los píxeles cae
+   por debajo de ese rango y un **16.7 %** arroja valores negativos, que no tienen sentido
+   físico. La conclusión de que Atitlán tiene concentraciones bajas es sólida, pero **sus
+   valores absolutos concretos no son fiables**. En Amatitlán este problema es marginal
+   (0.17 %).
+
+4. **No hay máscara de nubes por píxel.** La colección utilizada no proporciona las capas
+   de detección de nubes. El único control fue elegir escenas con poca nubosidad y
+   descartar píxeles espectralmente inválidos. Podrían quedar nubes o sombras residuales.
+
+5. **Sin corrección atmosférica.** Se usó el nivel L1C, que mide la luz en lo alto de la
+   atmósfera. Es lo que pide el algoritmo, pero añade incertidumbre.
+
+6. **Solo 11 fechas por lago.** Es suficiente para ver un patrón estacional, pero no para
+   afirmar una tendencia de varios años.
+
+7. **Correlación no es causa.** Ninguna de las asociaciones descritas demuestra causalidad.
+
+---
+
+## 6. Conclusiones y recomendaciones
 
 ### Conclusiones
 
-1. **La teledetección es una herramienta viable y costo-eficiente** para el monitoreo continuo de
-   floraciones de cianobacteria en Atitlán y Amatitlán. El flujo desarrollado permite procesar
-   una fecha completa —desde la descarga hasta los mapas y estadísticas— de forma automatizada y
-   reproducible.
-
-2. **Los dos lagos presentan condiciones claramente distintas.** Amatitlán muestra
-   concentraciones promedio superiores y un piso de afectación más alto en todas las fechas,
-   consistente con una eutrofización crónica; Atitlán exhibe mayor variabilidad estacional y
-   mejores mínimos, aunque nunca desciende por debajo del umbral de alerta.
-
-3. **El patrón estacional es predecible**, con máximos entre abril y julio y mínimos relativos en
-   noviembre y diciembre. Esta regularidad es precisamente lo que hace posible un sistema de
-   alerta temprana.
-
-4. **Los índices genéricos no bastan.** La ausencia de correlación entre el NDWI y la
-   cianobacteria demuestra que evaluar la calidad del agua requiere índices específicos de
-   clorofila; la apariencia general del cuerpo de agua no revela su estado real.
-
-5. **Los resultados actuales son de carácter demostrativo.** Provienen del módulo de simulación
-   del pipeline y no de imágenes Sentinel-2 reales, por lo que validan la metodología pero no
-   describen el estado ecológico verdadero de los lagos.
+1. **Los dos lagos están en estados muy diferentes.** Amatitlán muestra concentraciones
+   propias de un sistema con exceso de nutrientes; Atitlán, de un lago de aguas limpias.
+2. **Amatitlán muestra una tendencia al alza** dentro del período observado, con sus
+   valores más altos en abril y junio de 2026.
+3. **Hay un patrón estacional claro** en ambos lagos: peor entre abril y junio, mejor en
+   noviembre y diciembre.
+4. **El problema es espacialmente selectivo**: se concentra en zonas someras y cercanas a
+   la costa, y esas zonas se repiten entre fechas.
+5. **La teledetección funciona como sistema de vigilancia**, siempre que sus resultados se
+   interpreten con las limitaciones anteriores.
 
 ### Recomendaciones
 
-**Prioridad inmediata — validación con datos reales.** Completar la ejecución del pipeline con
-imágenes Sentinel-2 descargadas desde Copernicus y actualizar todas las cifras de este informe.
-Ningún valor debe difundirse ni emplearse en la toma de decisiones antes de ese paso.
-
-**Validación de campo.** Contrastar las estimaciones satelitales con muestreos in situ de
-clorofila-a en al menos cinco puntos por lago, de modo que la función de calibración pueda
-ajustarse a las condiciones locales. Los algoritmos empleados fueron desarrollados para otras
-latitudes y su transferencia a lagos tropicales de altura requiere verificación.
-
-**Sistema de alerta temprana.** Aprovechar la ventana de ascenso de enero a marzo para emitir
-avisos preventivos antes del pico de abril a julio, dirigidos a autoridades de salud,
-municipalidades ribereñas y operadores turísticos.
-
-**Monitoreo focalizado.** Concentrar los esfuerzos de muestreo y las medidas de mitigación en
-los sectores que los mapas identifican como puntos de acumulación recurrente, en lugar de
-distribuir los recursos de manera uniforme por todo el lago.
-
-**Integración con datos de cuenca.** Incorporar información de descargas de aguas residuales,
-uso de fertilizantes, precipitación y temperatura del agua. La teledetección revela *dónde* y
-*cuándo* ocurre el problema; identificar *por qué* exige cruzar estas variables.
-
-**Ampliación de la serie temporal.** Extender el análisis a un histórico de cinco a diez años
-para distinguir entre la variabilidad estacional normal y una tendencia real de deterioro o
-mejora, información esencial para evaluar la efectividad de las políticas de conservación.
-
-**Difusión accesible.** Utilizar los mapas interactivos como instrumento de comunicación con las
-comunidades ribereñas. La transparencia y el acceso público a esta información fortalecen la
-participación ciudadana en la protección de ambos lagos.
+- **Validar con muestras de agua.** Es la limitación más importante. Con al menos cinco
+  puntos de muestreo por lago se podría ajustar el algoritmo a las condiciones locales.
+- **Vigilar preventivamente entre enero y marzo**, antes del período de mayor riesgo.
+- **Concentrar el esfuerzo en las zonas persistentes** que señalan los mapas, en lugar de
+  repartirlo por igual.
+- **Priorizar Amatitlán** para intervención inmediata, sin descuidar Atitlán: un lago
+  limpio y profundo puede deteriorarse, como ya ocurrió en 2009.
+- **Cruzar con datos de la cuenca**: descargas residuales, uso de fertilizantes, lluvia y
+  temperatura del agua. El satélite dice *dónde* y *cuándo*; para el *por qué* hacen falta
+  esos datos.
+- **Ampliar la serie histórica** a cinco o diez años para distinguir la variación normal
+  de una tendencia real.
 
 ---
 
-### Anexo — Productos generados
+## Referencias
 
-| Archivo | Contenido |
-|---------|-----------|
-| `outputs/act5_comparativo_Atitlan.png` | Mapa comparativo de fechas extremas, Atitlán |
-| `outputs/act5_comparativo_Amatitlan.png` | Mapa comparativo de fechas extremas, Amatitlán |
-| `outputs/act5_mapa_interactivo_Atitlan.html` | Mapa interactivo navegable, Atitlán |
-| `outputs/act5_mapa_interactivo_Amatitlan.html` | Mapa interactivo navegable, Amatitlán |
-| `outputs/act6_correlacion_Atitlan.png` | Matriz de correlación de Pearson, Atitlán |
-| `outputs/act6_correlacion_Amatitlan.png` | Matriz de correlación de Pearson, Amatitlán |
-| `outputs/act8_distribuciones_Atitlan.png` | Diagramas de caja e histogramas, Atitlán |
-| `outputs/act8_distribuciones_Amatitlan.png` | Diagramas de caja e histogramas, Amatitlán |
-| `outputs/act8_extension_espacial.csv` | Área afectada por lago y fecha |
+Las siguientes referencias fueron verificadas una a una:
+
+- **OECD (1982).** *Eutrophication of Waters: Monitoring, Assessment and Control.* OECD,
+  París. DOI: 10.1787/9789264077980-en. Establece la clasificación por clorofila-a media:
+  oligotrófico < 2.5; mesotrófico 2.5–8; **eutrófico 8–25**; hipertrófico > 25 µg/L.
+- **WHO (2021).** *Guidelines on recreational water quality. Volume 1: coastal and fresh
+  waters.* Organización Mundial de la Salud, Ginebra. Con dominancia de cianobacterias:
+  nivel de vigilancia 1–12 µg/L; **Alerta 1: 12–24 µg/L** de clorofila-a.
+- **Mishra, S. & Mishra, D. R. (2012).** *Normalized difference chlorophyll index: a novel
+  model for remote estimation of chlorophyll-a concentration in turbid productive waters.*
+  Remote Sensing of Environment, **117**, 394–406. DOI: 10.1016/j.rse.2011.10.016.
+  Introduce el índice NDCI y lo calibra en el rango 1–60 mg/m³.
+- **Sentinel Hub Custom Scripts.** *Cyanobacteria Chlorophyll-a NDCI L1C.* Documenta el
+  polinomio empleado, su calibración para *Microcystis aeruginosa* y sus errores
+  (MAPE 42.3 %, RMSE relativo 95.8 %).
+
+> **Corrección de una referencia anterior.** Una versión previa de este trabajo citaba
+> «Mishra, S. et al. (2019), *Applicability of Sentinel-2 satellite data for monitoring
+> chlorophyll-a in inland waters*, Remote Sensing of Environment 232, 111354». Al
+> verificarla se comprobó que **ese DOI corresponde a otro artículo**: Hurskainen,
+> Adhikari, Siljander, Pellikka y Hemp (2019), *Auxiliary datasets improve accuracy of
+> object-based land use/land cover classification in heterogeneous savanna landscapes*,
+> Remote Sensing of Environment **233**, 111354, que trata de cobertura del suelo en
+> sabana y no guarda relación con la calidad del agua. La referencia se ha sustituido por
+> la de Mishra & Mishra (2012), que sí sustenta el índice utilizado.
+
+---
+
+### Anexo — Dónde están los resultados
+
+| Carpeta | Contenido |
+|---|---|
+| `outputs/parte1_real/tables/` | Todas las tablas numéricas en formato CSV |
+| `outputs/parte1_real/figures/` | Gráficas de evolución, distribuciones y correlaciones |
+| `outputs/parte1_real/maps/` | Mapas por fecha, comparativos, de persistencia e interactivos |
+| `outputs/parte1_real/reports/` | Informe técnico detallado |
+| `outputs/parte1_real/validation/` | Comprobaciones automáticas del procesamiento |
+
+Los archivos sueltos en `outputs/` que terminan en `_demo` o llevan el prefijo `act5_`,
+`act6_`, `act8_` pertenecen a la **versión simulada obsoleta** y no deben usarse.
