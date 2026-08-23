@@ -1,0 +1,22 @@
+total_pixeles,motivo_escala,escala_aplicada,descartados_nodata,descartados_no_finitos,descartados_reflectancia_no_positiva,diagnostico_reflectancia_mayor_1,descartados_no_agua,pixeles_agua,descartados_indice_no_finito,fuera_calibracion,chl_negativa,descartados_duplicados,filas_finales,lake,date,nubosidad_oficial_pct
+312579,numeros digitales (mediana |v|=2318.0); se aplica escala 0.0001 declarada por la coleccion (offset 0),0.0001,8306,0,0,17,268089,36184,0,27,18,0,36184,Amatitlan,2025-04-15,0.09
+312579,numeros digitales (mediana |v|=2415.0); se aplica escala 0.0001 declarada por la coleccion (offset 0),0.0001,8306,0,0,24,268089,36184,0,22,12,0,36184,Amatitlan,2025-04-28,1.03
+312579,numeros digitales (mediana |v|=2216.0); se aplica escala 0.0001 declarada por la coleccion (offset 0),0.0001,8307,0,4,1,267834,36434,0,178,30,0,36434,Amatitlan,2025-11-24,0.5
+312579,numeros digitales (mediana |v|=2079.0); se aplica escala 0.0001 declarada por la coleccion (offset 0),0.0001,8306,0,1,0,267604,36668,0,304,17,0,36668,Amatitlan,2026-01-08,0.77
+312579,numeros digitales (mediana |v|=2125.0); se aplica escala 0.0001 declarada por la coleccion (offset 0),0.0001,8306,0,1,1,268142,36130,0,18,17,0,36130,Amatitlan,2026-02-02,0.39
+312579,numeros digitales (mediana |v|=2116.0); se aplica escala 0.0001 declarada por la coleccion (offset 0),0.0001,8306,0,0,1,267712,36561,0,18,16,0,36561,Amatitlan,2026-02-07,0.02
+312579,numeros digitales (mediana |v|=2295.0); se aplica escala 0.0001 declarada por la coleccion (offset 0),0.0001,8306,0,3,85,267676,36594,0,7,7,0,36594,Amatitlan,2026-03-29,0.01
+312579,numeros digitales (mediana |v|=2409.0); se aplica escala 0.0001 declarada por la coleccion (offset 0),0.0001,8306,0,0,54,267487,36786,0,10,6,0,36786,Amatitlan,2026-04-13,0.09
+312579,numeros digitales (mediana |v|=2411.0); se aplica escala 0.0001 declarada por la coleccion (offset 0),0.0001,8306,0,1,40,269361,34911,0,11,10,0,34911,Amatitlan,2026-04-28,4.96
+312579,numeros digitales (mediana |v|=2791.0); se aplica escala 0.0001 declarada por la coleccion (offset 0),0.0001,8307,0,0,0,267628,36644,0,45,17,0,36644,Amatitlan,2026-06-19,13.0
+1208880,numeros digitales (mediana |v|=2105.0); se aplica escala 0.0001 declarada por la coleccion (offset 0),0.0001,23923,0,580,6,876484,307893,0,232645,115865,0,307893,Atitlan,2025-01-18,0.02
+1208880,numeros digitales (mediana |v|=2397.0); se aplica escala 0.0001 declarada por la coleccion (offset 0),0.0001,23326,0,0,2,880225,305329,0,37303,1985,0,305329,Atitlan,2025-04-13,0.54
+1208880,numeros digitales (mediana |v|=2573.0); se aplica escala 0.0001 declarada por la coleccion (offset 0),0.0001,23326,0,2,1056,880262,305290,0,126919,35780,0,305290,Atitlan,2025-05-13,4.37
+1208880,numeros digitales (mediana |v|=2786.0); se aplica escala 0.0001 declarada por la coleccion (offset 0),0.0001,23332,0,42,8,886817,298689,0,136679,55325,0,298689,Atitlan,2025-07-17,3.57
+1208880,numeros digitales (mediana |v|=2262.0); se aplica escala 0.0001 declarada por la coleccion (offset 0),0.0001,23981,0,530,1008,879071,305298,0,235223,127657,0,305298,Atitlan,2025-11-21,3.15
+1208880,numeros digitales (mediana |v|=2046.0); se aplica escala 0.0001 declarada por la coleccion (offset 0),0.0001,23330,0,17,7492,876127,309406,0,224009,95698,0,309406,Atitlan,2025-12-29,3.17
+1208880,numeros digitales (mediana |v|=2109.0); se aplica escala 0.0001 declarada por la coleccion (offset 0),0.0001,23343,0,20,2,879387,306130,0,172867,45294,0,306130,Atitlan,2026-02-12,0.04
+1208880,numeros digitales (mediana |v|=2189.0); se aplica escala 0.0001 declarada por la coleccion (offset 0),0.0001,23327,0,4,495,880117,305432,0,114457,14321,0,305432,Atitlan,2026-03-24,3.17
+1208880,numeros digitales (mediana |v|=2529.0); se aplica escala 0.0001 declarada por la coleccion (offset 0),0.0001,23326,0,1,5,880887,304666,0,36808,8224,0,304666,Atitlan,2026-04-13,0.01
+1208880,numeros digitales (mediana |v|=2712.0); se aplica escala 0.0001 declarada por la coleccion (offset 0),0.0001,23326,0,1,4357,880928,304625,0,54333,5082,0,304625,Atitlan,2026-04-28,4.96
+1208880,numeros digitales (mediana |v|=2886.0); se aplica escala 0.0001 declarada por la coleccion (offset 0),0.0001,23327,0,13,8,881434,304106,0,141877,54809,0,304106,Atitlan,2026-07-22,4.02

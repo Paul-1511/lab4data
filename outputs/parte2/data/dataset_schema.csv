@@ -1,0 +1,27 @@
+variable,tipo,rol,faltantes_pct,motivo
+lake,category,trazabilidad,0.0,"agrupacion, validacion entre lagos y estratificacion"
+date,category,trazabilidad,0.0,validacion temporal y estratificacion
+row,int32,trazabilidad,0.0,reconstruccion espacial del raster
+col,int32,trazabilidad,0.0,reconstruccion espacial del raster
+x_utm,float64,trazabilidad,0.0,bloques espaciales de 1x1 km en EPSG:32615
+y_utm,float64,trazabilidad,0.0,bloques espaciales de 1x1 km en EPSG:32615
+longitude,float64,trazabilidad,0.0,mapas y trazabilidad geografica
+latitude,float64,trazabilidad,0.0,mapas y trazabilidad geografica
+B02,float32,predictor_principal,0.0,
+B03,float32,predictor_principal,0.0,
+B04,float32,excluida_por_fuga,0.0,"insumo directo de NDCI, que genera la clorofila y la respuesta"
+B05,float32,excluida_por_fuga,0.0,"insumo directo de NDCI, que genera la clorofila y la respuesta"
+B07,float32,predictor_principal,0.0,
+B08,float32,predictor_principal,0.0,
+B8A,float32,predictor_principal,0.0,
+B11,float32,predictor_principal,0.0,
+B12,float32,predictor_principal,0.0,
+NDVI,float32,excluida_por_fuga,0.0,"utiliza B04; se conserva porque el enunciado lo exige, pero solo es admisible en un analisis de sensibilidad etiquetado como fuga indirecta"
+NDWI,float32,predictor_principal,0.0,
+NDCI,float32,excluida_por_fuga,0.0,indice del que se deriva la clorofila y por tanto la respuesta
+FAI,float32,excluida_por_fuga,0.0,utiliza B04; comparte insumo con NDCI (fuga indirecta)
+chlorophyll,float32,excluida_por_fuga,0.0,variable de la que se deriva directamente la respuesta
+high_cyano_20,int8,excluida_por_fuga,0.0,es la propia respuesta candidata
+high_cyano_25,int8,excluida_por_fuga,0.0,es la propia respuesta candidata
+high_cyano_50,int8,excluida_por_fuga,0.0,es la propia respuesta candidata
+fuera_calibracion,bool,diagnostico,0.0,

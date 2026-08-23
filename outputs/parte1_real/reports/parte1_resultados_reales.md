@@ -1,6 +1,6 @@
 # Parte 1 regenerada con datos Sentinel-2 L1C reales
 
-Generado: 2026-08-23 17:11:10  
+Generado: 2026-08-23 17:19:30  
 Fuente: 22 GeoTIFF reales (SENTINEL2_L1C), EPSG:32615, 20 m.  
 Area por pixel derivada de la transformacion afin: **0.0400 ha** (400 m2).
 

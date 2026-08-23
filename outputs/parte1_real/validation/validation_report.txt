@@ -1,6 +1,6 @@
 VALIDACION DE LA PARTE 1 REGENERADA CON DATOS REALES
 ======================================================================
-Generado: 2026-08-23 17:17:06
+Generado: 2026-08-23 17:19:33
 
 Rasteres reales presentes : 22/22
 Filas de la serie temporal: 22

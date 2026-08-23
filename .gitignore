@@ -4,11 +4,14 @@ __pycache__/
 *.pyc
 .ipynb_checkpoints/
 
-# Datos pesados regenerables. Se excluyen del control de versiones porque se
+# Datos pesados regenerables.
+# Se excluyen del control de versiones porque se
 # reconstruyen con los scripts; los manifiestos, reportes y figuras SI se versionan.
 # outputs/rasters/          -> ~244 MB, se regenera con descargar_rasters.py --download
 # outputs/parte2/data/pixels/ -> ~80-130 MB, se regenera con preparar_dataset_ml.py --build
+
 outputs/rasters/
 outputs/parte2/data/pixels/
+outputs/parte1_real/logs/
 outputs/parte2/logs/
 outputs/logs/

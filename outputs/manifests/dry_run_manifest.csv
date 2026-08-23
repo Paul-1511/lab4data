@@ -1,0 +1,2 @@
+lago,fecha,coleccion,geometria,tipo_geometria,geometria_es_bbox,bandas,n_bandas,nubosidad_oficial_pct,resolucion_m,crs_destino,estado_catalogo,n_escenas_l1c,identificadores,estado_local,archivo_destino,detalle
+Atitlan,2025-12-29,SENTINEL2_L1C,Lago_Atitlan.geojson,Polygon,True,"B02,B03,B04,B05,B07,B08,B8A,B11,B12",9,3.17,20.0,EPSG:32615,DISPONIBLE,2,S2C_MSIL1C_20251229T162941_N0511_R040_T15PXS_20251229T181656.SAFE;S2C_MSIL1C_20251229T162941_N0511_R040_T15PYS_20251229T181656.SAFE,LOCAL_INCOMPLETO,outputs\rasters\Atitlan\Atitlan_2025-12-29.tif,

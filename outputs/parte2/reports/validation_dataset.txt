@@ -1,0 +1,15 @@
+VALIDACION DEL DATASET DE MACHINE LEARNING - LABORATORIO 4 PARTE 2
+==========================================================================
+Generado: 2026-08-23T16:23:24
+
+Particiones esperadas : 22
+Particiones presentes : 22
+Filas totales         : 3,756,510
+Columnas del esquema  : 28
+Fuga de informacion   : el conjunto predictor principal ['B02', 'B03', 'B07', 'B08', 'B8A', 'B11', 'B12', 'NDWI'] no contiene ninguna variable de la cadena de la respuesta
+
+Avisos  : 0
+
+Criticos: 0
+
+RESULTADO: CORRECTA
