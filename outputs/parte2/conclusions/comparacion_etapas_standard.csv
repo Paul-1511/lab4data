@@ -1,0 +1,10 @@
+etapa,modelo,pr_auc,desviacion
+aleatorio 70/30,random_forest,0.9814,
+aleatorio 70/30,xgboost,0.9826,
+aleatorio 70/30,logistic,0.9135,
+validacion espacial,logistic,0.9026,0.0563
+validacion espacial,random_forest,0.9758,0.0128
+validacion espacial,xgboost,0.9757,0.015
+validacion temporal,logistic,0.6429,0.2839
+validacion temporal,random_forest,0.7416,0.251
+validacion temporal,xgboost,0.7042,0.2571

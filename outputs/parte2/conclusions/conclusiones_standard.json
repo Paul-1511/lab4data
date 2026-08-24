@@ -1,0 +1,116 @@
+{
+  "perfil": "standard",
+  "generado": "2026-08-24T00:07:08",
+  "semilla": 42,
+  "modelo_principal": "random_forest",
+  "criterio_seleccion": "mayor PR-AUC medio en validacion espacial",
+  "aleatorio_pr_auc": {
+    "random_forest": 0.9814,
+    "xgboost": 0.9826,
+    "logistic": 0.9135
+  },
+  "mejor_aleatorio": "xgboost",
+  "espacial_pr_auc": {
+    "logistic": {
+      "media": 0.9026,
+      "desv": 0.0563
+    },
+    "random_forest": {
+      "media": 0.9758,
+      "desv": 0.0128
+    },
+    "xgboost": {
+      "media": 0.9757,
+      "desv": 0.015
+    }
+  },
+  "mejor_espacial": "random_forest",
+  "diferencia_top2_espacial": 0.0001,
+  "empate_practico": true,
+  "temporal_pr_auc": {
+    "logistic": {
+      "media": 0.6429,
+      "desv": 0.2839,
+      "min": 0.1323,
+      "max": 0.98
+    },
+    "random_forest": {
+      "media": 0.7416,
+      "desv": 0.251,
+      "min": 0.1307,
+      "max": 0.9879
+    },
+    "xgboost": {
+      "media": 0.7042,
+      "desv": 0.2571,
+      "min": 0.1842,
+      "max": 0.9884
+    }
+  },
+  "cross_lake": [
+    {
+      "experimento": "A",
+      "train": "Atitlan",
+      "test": "Amatitlan",
+      "pr_auc": 0.7851,
+      "recall_operacional": 0.0401,
+      "TP": 2324,
+      "FN": 55672
+    },
+    {
+      "experimento": "B",
+      "train": "Amatitlan",
+      "test": "Atitlan",
+      "pr_auc": 0.5081,
+      "recall_operacional": 0.1312,
+      "TP": 282,
+      "FN": 1868
+    }
+  ],
+  "oof": {
+    "pr_auc": 0.9778651875158777,
+    "recall": 0.777441558873408,
+    "precision": 0.9832411632356961,
+    "f2": 0.8114083035735976,
+    "TP": 46760,
+    "FN": 13386,
+    "FP": 797,
+    "TN": 3695567,
+    "area_FN_ha": 535.44,
+    "area_FP_ha": 31.88
+  },
+  "shap_top3": [
+    {
+      "variable": "B07",
+      "shap_abs_media": 0.2108288057400881
+    },
+    {
+      "variable": "B03",
+      "shap_abs_media": 0.0929635613518752
+    },
+    {
+      "variable": "B8A",
+      "shap_abs_media": 0.0659419666040002
+    }
+  ],
+  "limitaciones": [
+    "La respuesta es un PROXY ESPECTRAL de clorofila-a, no una medicion de cianobacterias ni de toxinas.",
+    "No hubo validacion in situ en ninguna fase del laboratorio.",
+    "El algoritmo CyanoLakes reporta MAPE 42.3 % y RMSE relativo 95.8 %, y fue calibrado para Microcystis aeruginosa sobre datos simulados.",
+    "Dominio de calibracion del NDCI: 1-60 ug/L; una parte importante de los pixeles de Atitlan queda por debajo.",
+    "Atitlan presenta clorofila estimada negativa en una fraccion de sus pixeles: valores sin sentido fisico, conservados para trazabilidad.",
+    "La coleccion SENTINEL2_L1C no expone mascara de nubes por pixel (sin CLM, CLP, dataMask, SCL ni QA60).",
+    "Solo 22 escenas (11 fechas por lago): insuficiente para afirmar tendencias interanuales.",
+    "Desbalance 1:61 y fuerte concentracion de los positivos (37.7 % en 5 bloques, 87.6 % en 5 fechas).",
+    "Los mapas de probabilidad descriptivos son in-sample; la evaluacion no sesgada es la out-of-fold."
+  ],
+  "conclusiones": [
+    "El split aleatorio 70/30 es OPTIMISTA: mezcla pixeles vecinos del mismo bloque de 1 km, casi identicos entre si.",
+    "Random Forest y XGBoost estan en EMPATE PRACTICO bajo validacion espacial; la diferencia es menor que la desviacion entre folds.",
+    "Existe INESTABILIDAD TEMPORAL marcada: el desempeno varia fuertemente entre fechas y cae respecto de la validacion espacial.",
+    "La TRANSFERENCIA ENTRE LAGOS NO es satisfactoria: con umbral fijo el recall operacional se desploma en ambas direcciones.",
+    "El modelo sirve como APOYO DE CRIBADO dentro del dominio observado (estos dos lagos, estas fechas, este algoritmo de referencia).",
+    "NO sustituye el monitoreo in situ: no confirma presencia de cianobacterias ni toxicidad.",
+    "NO demuestra transferencia robusta a otros lagos ni a fechas futuras."
+  ]
+}

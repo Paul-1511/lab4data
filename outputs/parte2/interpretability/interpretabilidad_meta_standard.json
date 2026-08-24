@@ -1,0 +1,53 @@
+{
+  "perfil": "standard",
+  "firma_config": "ad7946302818d8b0",
+  "completo": true,
+  "modelo": "random_forest",
+  "hiperparametros": {
+    "min_samples_leaf": 5,
+    "max_features": "sqrt",
+    "max_depth": null
+  },
+  "seleccionado_por": "mayor PR-AUC medio en validacion espacial",
+  "semilla": 42,
+  "entorno": {
+    "python": "3.11.9",
+    "numpy": "2.4.3",
+    "pandas": "2.3.3",
+    "scikit_learn": "1.9.0",
+    "cpus": 16,
+    "seed": 42,
+    "dataset_version": "2.0",
+    "schema_hash": "65825179def16792",
+    "shap": "0.51.0",
+    "rasterio": "1.4.4",
+    "joblib": "1.5.3",
+    "pyarrow": "24.0.0",
+    "matplotlib": "3.11.1",
+    "xgboost": "3.2.0"
+  },
+  "n_ajuste": 3005284,
+  "n_evaluacion_no_vista": 751226,
+  "n_permutation": 150000,
+  "perm_repeats": 5,
+  "n_shap": 15704,
+  "estratos_shap": {
+    "Amatitlan_clase0": 4994,
+    "Amatitlan_clase1": 3717,
+    "Atitlan_clase0": 4994,
+    "Atitlan_clase1": 1999
+  },
+  "prevalencia_muestra_shap": 0.36398369842078454,
+  "prevalencia_poblacional": 0.016011137997769206,
+  "segundos": {
+    "fit": 126.06032299995422,
+    "permutation": 13.931722164154053,
+    "shap": 1569.8218121528625
+  },
+  "advertencias": [
+    "SHAP no implica causalidad: describe la contribucion a la prediccion del modelo, no un mecanismo fisico.",
+    "Las bandas espectrales estan fuertemente correlacionadas entre si, asi que la importancia se reparte entre variables redundantes; un valor bajo no significa que la banda sea prescindible.",
+    "La respuesta es un proxy espectral de clorofila-a, no una medicion in situ.",
+    "La muestra SHAP sobrerrepresenta la clase positiva: NO reproduce la prevalencia poblacional, por lo que las magnitudes son importancia relativa, no frecuencia esperada en el lago."
+  ]
+}

@@ -1,0 +1,27 @@
+VALIDACION EJERCICIOS 8, 9 y 10 - LABORATORIO 4 PARTE 2
+======================================================================
+Generado: 2026-08-24 01:26:42
+Perfil: standard
+
+shap 0.51.0 | rasterio 1.4.4
+Perfil                     : standard
+Predictores sin fuga       : 8
+Figuras de interpretabilidad: 5
+Muestra SHAP               : 15,704 filas
+Permutation sobre no vistas: 150,000 filas
+GeoTIFF de probabilidad    : 22
+  ejemplo: prob_Amatitlan_2025-01-28.tif 681x459 EPSG:32615 dtype=float32 nodata=-1.0
+OOF: bloques compartidos 0 | cobertura 3,756,510 | PR-AUC 0.9778651875158777
+Figuras de mapas           : 7
+Conclusiones               : 7 | limitaciones 9
+Sin PDF de la Parte 2       : correcto
+Informe academico           : 2,398 palabras, 22 figuras (0 rotas)
+Articulo tecnico             : 6,643 palabras
+Notebook final              : 79 celdas, 39 ejecutadas, 0 errores
+Inventario Ejercicios 8-10   : 29 artefactos
+
+Avisos  : 0
+
+Criticos: 0
+
+RESULTADO: CORRECTA

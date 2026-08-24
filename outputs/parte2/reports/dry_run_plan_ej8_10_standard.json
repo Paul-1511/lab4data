@@ -1,0 +1,50 @@
+{
+  "perfil": "standard",
+  "entorno": {
+    "python": "3.11.9",
+    "numpy": "2.4.3",
+    "pandas": "2.3.3",
+    "scikit_learn": "1.9.0",
+    "cpus": 16,
+    "seed": 42,
+    "dataset_version": "2.0",
+    "schema_hash": "65825179def16792",
+    "shap": "0.51.0",
+    "rasterio": "1.4.4",
+    "joblib": "1.5.3",
+    "pyarrow": "24.0.0",
+    "matplotlib": "3.11.1",
+    "xgboost": "3.2.0"
+  },
+  "n_jobs": 8,
+  "modelo": "random_forest",
+  "hiperparametros": {
+    "min_samples_leaf": 5,
+    "max_features": "sqrt",
+    "max_depth": null
+  },
+  "umbral": 0.9407730597461879,
+  "n_filas": 3756510,
+  "positivos": 60146,
+  "shap_recomendado": 15704,
+  "estratos_shap": {
+    "Amatitlan_clase0": 4994,
+    "Amatitlan_clase1": 3717,
+    "Atitlan_clase0": 4994,
+    "Atitlan_clase1": 1999
+  },
+  "n_ajustes_rf": 7,
+  "n_geotiff": 22,
+  "tiempo_estimado_min": 43.6,
+  "disco_estimado_mb": 155.0,
+  "memoria_mb": 184.1,
+  "oof_bloques_compartidos": 0,
+  "oof_cobertura_unica": true,
+  "advertencias": [
+    "Los mapas de probabilidad se generan con un modelo ajustado sobre TODO el dataset: son descriptivos/de despliegue, NO una validacion no sesgada.",
+    "Los mapas de error TP/TN/FP/FN se construyen SOLO con predicciones out-of-fold espaciales, que si son honestas.",
+    "La muestra SHAP sobrerrepresenta positivos y no reproduce la prevalencia poblacional.",
+    "SHAP describe el comportamiento del modelo, no causalidad; las bandas estan correlacionadas entre si.",
+    "La respuesta es un proxy espectral de clorofila-a sin validacion in situ."
+  ]
+}

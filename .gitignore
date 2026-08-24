@@ -25,3 +25,10 @@ outputs/parte2/**/*.tmp.parquet
 outputs/parte2/smoke/
 outputs/parte2/models/
 outputs/parte2/splits/
+
+# Ejercicios 8-10: GeoTIFF predictivos, Parquet OOF, SHAP completo y modelos
+outputs/parte2/maps/probability/**/*.tif
+outputs/parte2/maps/errors_oof/**/*.tif
+outputs/parte2/maps/errors_oof/pixels/
+outputs/parte2/interpretability/shap_values_*.npy
+outputs/parte2/**/*.joblib

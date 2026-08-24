@@ -1,0 +1,32 @@
+{
+  "etiqueta": "oof_global",
+  "umbral": 0.9407730597461879,
+  "n": 3756510,
+  "prevalencia_real": 0.016011137997769206,
+  "TP": 46760,
+  "TN": 3695567,
+  "FP": 797,
+  "FN": 13386,
+  "accuracy": 0.9962244210716862,
+  "precision": 0.9832411632356961,
+  "recall": 0.777441558873408,
+  "f1": 0.8683137888452503,
+  "f2": 0.8114083035735976,
+  "roc_auc": 0.9994962245671539,
+  "pr_auc": 0.9778651875158777,
+  "balanced_accuracy": 0.888612970790153,
+  "specificity": 0.999784382706898,
+  "fpr": 0.00021561729310208625,
+  "fnr": 0.22255844112659195,
+  "mcc": 0.8725797665747878,
+  "brier": 0.0023866677656769753,
+  "perfil": "standard",
+  "n_folds": 5,
+  "bloques_compartidos": 0,
+  "modelo": "random_forest",
+  "hiperparametros": {
+    "min_samples_leaf": 5,
+    "max_features": "sqrt",
+    "max_depth": null
+  }
+}

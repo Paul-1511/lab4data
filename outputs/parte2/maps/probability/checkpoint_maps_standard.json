@@ -1,0 +1,8 @@
+{
+  "firma_config": "7fba1e4cd2455f6a",
+  "completo": true,
+  "perfil": "standard",
+  "n_geotiff": 22,
+  "umbral": 0.9407730597461879,
+  "advertencia": "probabilidades in-sample, no validacion"
+}

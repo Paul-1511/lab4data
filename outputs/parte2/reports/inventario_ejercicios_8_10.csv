@@ -1,0 +1,30 @@
+ruta,tipo,tamano_kb,perfil,ejercicio,estado_validacion
+outputs/parte2/interpretability/checkpoint_explain_standard.json,json,0.1,standard,8 (interpretabilidad),OK
+outputs/parte2/interpretability/importancia_nativa_standard.csv,csv,0.2,standard,8 (interpretabilidad),OK
+outputs/parte2/interpretability/importancia_nativa_standard.png,png,54.1,standard,8 (interpretabilidad),OK
+outputs/parte2/interpretability/interpretabilidad_meta_standard.json,json,1.8,standard,8 (interpretabilidad),OK
+outputs/parte2/interpretability/permutation_importance_standard.csv,csv,0.4,standard,8 (interpretabilidad),OK
+outputs/parte2/interpretability/permutation_importance_standard.png,png,24.8,standard,8 (interpretabilidad),OK
+outputs/parte2/interpretability/shap_abs_media_standard.csv,csv,0.2,standard,8 (interpretabilidad),OK
+outputs/parte2/interpretability/shap_bar_standard.png,png,34.9,standard,8 (interpretabilidad),OK
+outputs/parte2/interpretability/shap_beeswarm_standard.png,png,120.4,standard,8 (interpretabilidad),OK
+outputs/parte2/interpretability/shap_dependence_standard.png,png,226.3,standard,8 (interpretabilidad),OK
+outputs/parte2/conclusions/comparacion_etapas_standard.csv,csv,0.4,standard,10 (conclusiones),OK
+outputs/parte2/conclusions/conclusiones_standard.json,json,3.8,standard,10 (conclusiones),OK
+outputs/parte2/maps/figures/comparacion_lagos_standard.png,png,185.5,standard,9 (mapas de probabilidad y errores OOF),OK
+outputs/parte2/maps/figures/errores_oof_Amatitlan_2026-04-13_standard.png,png,52.4,standard,9 (mapas de probabilidad y errores OOF),OK
+outputs/parte2/maps/figures/errores_oof_Amatitlan_2026-06-19_standard.png,png,52.6,standard,9 (mapas de probabilidad y errores OOF),OK
+outputs/parte2/maps/figures/errores_oof_Atitlan_2026-04-13_standard.png,png,44.1,standard,9 (mapas de probabilidad y errores OOF),OK
+outputs/parte2/maps/figures/evolucion_temporal_prediccion_standard.png,png,122.4,standard,9 (mapas de probabilidad y errores OOF),OK
+outputs/parte2/maps/figures/probabilidad_Amatitlan_2026-06-19_standard.png,png,156.0,standard,9 (mapas de probabilidad y errores OOF),OK
+outputs/parte2/maps/figures/probabilidad_Atitlan_2026-04-13_standard.png,png,144.9,standard,9 (mapas de probabilidad y errores OOF),OK
+outputs/parte2/maps/probability/resumen_probabilidad_standard.csv,csv,3.7,standard,9 (mapas de probabilidad y errores OOF),OK
+outputs/parte2/maps/errors_oof/conteo_errores_standard.csv,csv,2.8,standard,9 (mapas de probabilidad y errores OOF),OK
+outputs/parte2/maps/errors_oof/metricas_oof_por_bloque_standard.csv,csv,39.4,standard,9 (mapas de probabilidad y errores OOF),OK
+outputs/parte2/maps/errors_oof/metricas_oof_por_fecha_standard.csv,csv,8.1,standard,9 (mapas de probabilidad y errores OOF),OK
+outputs/parte2/maps/errors_oof/metricas_oof_por_lago_standard.csv,csv,0.9,standard,9 (mapas de probabilidad y errores OOF),OK
+outputs/parte2/maps/errors_oof/peores_bloques_FN_standard.csv,csv,0.7,standard,9 (mapas de probabilidad y errores OOF),OK
+outputs/parte2/maps/errors_oof/peores_bloques_FP_standard.csv,csv,0.7,standard,9 (mapas de probabilidad y errores OOF),OK
+outputs/parte2/maps/errors_oof/peores_fechas_FN_standard.csv,csv,0.8,standard,9 (mapas de probabilidad y errores OOF),OK
+outputs/parte2/maps/errors_oof/checkpoint_errors_standard.json,json,0.2,standard,9 (mapas de probabilidad y errores OOF),OK
+outputs/parte2/maps/errors_oof/metricas_oof_global_standard.json,json,0.8,standard,9 (mapas de probabilidad y errores OOF),OK
