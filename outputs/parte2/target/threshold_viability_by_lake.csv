@@ -1,0 +1,9 @@
+umbral_ug_L,lake,n_total,positivos,negativos,pct_positivo,entrenable,evaluable,criterio_entrenable
+8.0,Amatitlan,399646,57996,341650,14.51184298103822,True,True,>= 1000 positivos y >= 0.05 %
+8.0,Atitlan,3356864,2150,3354714,0.0640478732531315,True,True,>= 1000 positivos y >= 0.05 %
+20.0,Amatitlan,399646,9768,389878,2.444163084329632,True,True,>= 1000 positivos y >= 0.05 %
+20.0,Atitlan,3356864,64,3356800,0.0019065413433490305,False,True,>= 1000 positivos y >= 0.05 %
+25.0,Amatitlan,399646,5181,394465,1.2963973116207843,True,True,>= 1000 positivos y >= 0.05 %
+25.0,Atitlan,3356864,14,3356850,0.0004170559188576004,False,True,>= 1000 positivos y >= 0.05 %
+50.0,Amatitlan,399646,604,399042,0.151133753371734,False,True,>= 1000 positivos y >= 0.05 %
+50.0,Atitlan,3356864,4,3356860,0.00011915883395931441,False,True,>= 1000 positivos y >= 0.05 %

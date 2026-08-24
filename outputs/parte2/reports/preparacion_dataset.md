@@ -1,6 +1,6 @@
 # Preparacion del dataset de Machine Learning — Laboratorio 4, Parte 2
 
-Generado: 2026-08-23T16:22:39  
+Generado: 2026-08-23T19:25:06  
 Fuente: 22 GeoTIFF Sentinel-2 L1C reales (SENTINEL2_L1C), EPSG:32615, 20 m.  
 Semilla fija: 42
 
@@ -14,24 +14,8 @@ Semilla fija: 42
   - Amatitlan: 399,646 (10.6 %)
   - Atitlan: 3,356,864 (89.4 %)
 
-### Descartes por criterio (suma sobre los 22 rasteres)
-
-| Criterio | Pixeles descartados |
-|---|---|
-| NoData / -9999 / fuera de datos validos | 340,929 |
-| NaN o infinitos | 0 |
-| Reflectancia TOA <= 0 (no fisica) | 1,220 |
-| No es agua segun la mascara WBI | 12,361,361 |
-| Indice espectral no finito | 0 |
-| Filas duplicadas (lake,date,row,col) | 0 |
-
-Pixeles brutos totales: 16,423,470
-
-Diagnostico (NO se descartan): 14,662 pixeles conservan alguna banda con reflectancia > 1, compatible con nubes o reflexion especular. No se impuso ningun limite superior arbitrario.
-
 ### Escala radiometrica
 
-- Deteccion automatica: numeros digitales (mediana |v|=2318.0); se aplica escala 0.0001 declarada por la coleccion (offset 0)
 - La coleccion `SENTINEL2_L1C` declara `scale = 0.0001, offset = 0`. Los GeoTIFF conservan numeros digitales, por lo que se multiplican por 0.0001 una unica vez.
 - `mainlab4.normalize_band()` **no** se utiliza aqui: solo divide cuando el dtype es entero, y estos rasteres son float32, por lo que habria dejado los DN sin escalar.
 
@@ -40,6 +24,18 @@ Diagnostico (NO se descartan): 14,662 pixeles conservan alguna banda con reflect
 - **Separacion agua/tierra:** los GeoJSON disponibles son rectangulos identicos al bounding box oficial, no contornos reales de lago. La unica separacion efectiva es la mascara **WBI** de `mainlab4.py`. El area detectada es coherente con la realidad (Atitlan ~123 km2, Amatitlan ~15 km2), lo que respalda la mascara.
 - **Nubes:** `SENTINEL2_L1C` no expone CLM, CLP, dataMask, SCL ni QA60. No se fabrico ninguna mascara sustituta. El control disponible es la seleccion oficial de fechas con baja nubosidad sobre el lago mas los filtros de validez espectral aplicados aqui.
 - **Nivel L1C:** son reflectancias de tope de atmosfera, sin correccion atmosferica. El algoritmo NDCI fue disenado para L1C, pero esto anade incertidumbre a la magnitud absoluta de la clorofila.
+- **Estimador satelital, no medicion in situ:** el algoritmo reporta **MAPE 42.3 %** y **RMSE relativo 95.8 %**, y fue calibrado para *Microcystis aeruginosa* sobre datos simulados. En este laboratorio no se realizo ninguna validacion de campo.
+
+#### Advertencia sobre el Lago de Atitlan
+
+> El estimador satelital muestra concentraciones generalmente menores en Atitlan que en Amatitlan durante las fechas estudiadas; sin embargo, una proporcion importante de sus pixeles cae fuera del dominio de calibracion, por lo que los valores absolutos requieren validacion in situ.
+
+Porcentaje de observaciones fuera del dominio de calibracion [1, 60] ug/L, por lago:
+
+- **Amatitlan:** 0.17 %
+- **Atitlan:** 45.08 %
+
+Por tanto, la conclusion defendible es **comparativa** (Atitlan presenta valores estimados menores que Amatitlan en estas fechas), no absoluta: no procede afirmar sin mas que Atitlan esta "limpio".
 
 ---
 
@@ -70,21 +66,28 @@ El polinomio implementado en `mainlab4.chl_from_ndci` (`826.57*NDCI^3 - 176.43*N
 
 | Umbral | Respaldo bibliografico | % clase alta global | % alta Amatitlan | % alta Atitlan |
 |---|---|---|---|---|
-| 20 ug/L | Dentro de la banda eutrofica OECD (8-25) y del rango de Alerta 1 de la WHO. Es el umbral usado en la Parte 1, pero no es una frontera publicada. | 0.262 % | 2.444 % | 0.002 % |
-| 25 ug/L | **Frontera eutrofico -> hipertrofico de OECD (1982)**, que coincide con el techo de la Alerta 1 de la WHO (24 ug/L). Dos fuentes independientes convergen aqui. | 0.138 % | 1.296 % | 0.000 % |
-| 50 ug/L | **Sin respaldo en las fuentes citadas.** No aparece en OECD 1982 ni como valor de clorofila en WHO 2021. En `lab4-2.ipynb` se justifico como 'criterio mas conservador', lo que es una eleccion arbitraria. | 0.016 % | 0.151 % | 0.000 % |
+| 8 ug/L **(principal)** | Transicion aproximada hacia condicion eutrofica (frontera mesotrofico -> eutrofico, OECD 1982). Respuesta principal. | 1.601 % | 14.512 % | 0.064 % |
+| 20 ug/L | Continuidad con el umbral empleado en la Parte 1. Dentro de la banda eutrofica de OECD (8-25) y del rango de Alerta 1 de la OMS (12-24). | 0.262 % | 2.444 % | 0.002 % |
+| 25 ug/L | Transicion aproximada hacia condicion hipertrofica (OECD 1982); coincide con el techo de la Alerta 1 de la OMS (24 ug/L). | 0.138 % | 1.296 % | 0.000 % |
+| 50 ug/L | Escenario extremo para analisis de sensibilidad. No aparece como valor de clorofila-a en OECD 1982 ni en las guias de la OMS 2021. | 0.016 % | 0.151 % | 0.000 % |
 
-### 2.4 Umbral recomendado: **25 ug/L**
+### 2.4 Respuesta principal: `high_cyano_8` (>= 8 ug/L)
 
-Se recomienda como respuesta principal `high_cyano_25` porque es la unica de las tres candidatas que corresponde a una **frontera publicada**: separa el estado eutrofico del hipertrofico en OECD (1982) y coincide practicamente con el limite superior de la Alerta 1 de la WHO (24 ug/L). Ambientalmente marca el punto en que la biomasa algal deja de ser alta para pasar a ser caracteristica de un sistema degradado.
+Se adopta **8 ug/L** como respuesta principal porque representa la **transicion aproximada hacia la condicion eutrofica**: es la frontera mesotrofico -> eutrofico de la clasificacion trofica de OECD (1982). Operacionaliza "alta presencia" como el punto en que la biomasa algal deja de ser la propia de un lago equilibrado y el cuerpo de agua entra en un regimen de exceso de nutrientes.
 
-**Analisis de sensibilidad recomendado:** repetir el modelado con `high_cyano_20` (continuidad con la Parte 1 y con el rango de vigilancia de la WHO). Se descarta 50 ug/L como respuesta principal por carecer de respaldo bibliografico en las fuentes citadas.
+Los otros tres umbrales **no son alternativas equivalentes**: describen situaciones ambientales distintas y se conservan como analisis de sensibilidad.
 
-La eleccion **no se hizo por balance de clases**: como muestra la tabla anterior, los tres umbrales producen un desbalance severo, y el recomendado no es el que mas favorece el entrenamiento.
+- **20 ug/L**: mantiene la continuidad con el umbral usado en la Parte 1.
+- **25 ug/L**: representa una condicion **hipertrofica**, es decir un estado mas severo que el que se quiere detectar como "alta presencia".
+- **50 ug/L**: se conserva como **escenario extremo**.
+
+La eleccion es **ambiental**. Que 8 ug/L produzca ademas mas observaciones positivas es una **consecuencia secundaria** de haber escogido la transicion eutrofica, no el criterio de seleccion: la viabilidad estadistica se analiza por separado en `threshold_viability.md` y no intervino en la definicion del umbral.
+
+> **Prudencia en la interpretacion.** La variable respuesta indica **clorofila-a alta estimada por satelite**, no una confirmacion in situ de presencia de cianobacterias ni de toxicidad. La clorofila mide biomasa fotosintetica total: no identifica especies ni toxinas.
 
 ### 2.5 Advertencia critica sobre el desbalance
 
-Con el umbral recomendado la clase alta representa el **0.138 %** del dataset (5,195 de 3,756,510 observaciones), es decir una razon de desbalance de **1:722**.
+Con el umbral recomendado la clase alta representa el **1.601 %** del dataset (60,146 de 3,756,510 observaciones), es decir una razon de desbalance de **1:61**.
 
 
 Consecuencias para el modelado: *accuracy* sera enganosa; deben reportarse *recall*, *precision*, F1 y sobre todo **PR-AUC**, y considerar pesos de clase o remuestreo en el entrenamiento, nunca modificando la clorofila.
@@ -122,11 +125,25 @@ B04, B05  ->  NDCI  ->  chlorophyll  ->  high_cyano_*
 | `chlorophyll` | variable de la que se deriva directamente la respuesta |
 | `FAI` | utiliza B04; comparte insumo con NDCI (fuga indirecta) |
 | `NDVI` | utiliza B04; se conserva porque el enunciado lo exige, pero solo es admisible en un analisis de sensibilidad etiquetado como fuga indirecta |
-| `high_cyano_20` | es la propia respuesta candidata |
-| `high_cyano_25` | es la propia respuesta candidata |
-| `high_cyano_50` | es la propia respuesta candidata |
+| `high_cyano_8` | es la propia respuesta principal |
+| `high_cyano_20` | es una respuesta candidata (sensibilidad) |
+| `high_cyano_25` | es una respuesta candidata (sensibilidad) |
+| `high_cyano_50` | es una respuesta candidata (sensibilidad) |
 | `water_mask` | es un filtro de construccion del dataset, no un predictor |
 | `valid_data` | es un filtro de construccion del dataset, no un predictor |
+| `fuera_calibracion` | es un diagnostico derivado de la clorofila |
+| `lake` | identifica el lago: usarlo permitiria memorizar diferencias entre cuerpos de agua en vez de aprender la senal espectral |
+| `date` | memorizacion temporal: el modelo aprenderia la fecha, no el fenomeno |
+| `year` | memorizacion temporal |
+| `month` | memorizacion temporal |
+| `season` | memorizacion temporal |
+| `row` | coordenada de rejilla: memorizacion espacial |
+| `col` | coordenada de rejilla: memorizacion espacial |
+| `x_utm` | coordenada: memorizacion espacial |
+| `y_utm` | coordenada: memorizacion espacial |
+| `longitude` | coordenada: memorizacion espacial |
+| `latitude` | coordenada: memorizacion espacial |
+| `spatial_block_1km` | identificador de bloque: es una variable de agrupacion para la validacion, no un predictor |
 
 **NDVI** se conserva en el dataset porque el enunciado lo exige explicitamente, pero **no entra en el modelo principal**: usa B04, el mismo canal que alimenta el NDCI, por lo que aporta fuga indirecta. Queda preparado como analisis de sensibilidad etiquetado.
 
@@ -142,6 +159,10 @@ B04, B05  ->  NDCI  ->  chlorophyll  ->  high_cyano_*
 | `y_utm` | bloques espaciales de 1x1 km en EPSG:32615 |
 | `longitude` | mapas y trazabilidad geografica |
 | `latitude` | mapas y trazabilidad geografica |
+| `year` | validacion temporal |
+| `month` | estacionalidad y validacion temporal |
+| `season` | estacionalidad (seca / lluviosa) |
+| `spatial_block_1km` | agrupacion para GroupKFold espacial (bloques de 1 km) |
 
 No se usan como predictoras para evitar que el modelo memorice la geografia en lugar de aprender una senal espectral generalizable.
 

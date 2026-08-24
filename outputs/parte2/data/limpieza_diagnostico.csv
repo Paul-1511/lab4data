@@ -1,4 +1,5 @@
 total_pixeles,motivo_escala,escala_aplicada,descartados_nodata,descartados_no_finitos,descartados_reflectancia_no_positiva,diagnostico_reflectancia_mayor_1,descartados_no_agua,pixeles_agua,descartados_indice_no_finito,fuera_calibracion,chl_negativa,descartados_duplicados,filas_finales,lake,date,nubosidad_oficial_pct
+312579,numeros digitales (mediana |v|=2017.0); se aplica escala 0.0001 declarada por la coleccion (offset 0),0.0001,8306,0,3,2,267720,36550,0,32,24,0,36550,Amatitlan,2025-01-28,0.06
 312579,numeros digitales (mediana |v|=2318.0); se aplica escala 0.0001 declarada por la coleccion (offset 0),0.0001,8306,0,0,17,268089,36184,0,27,18,0,36184,Amatitlan,2025-04-15,0.09
 312579,numeros digitales (mediana |v|=2415.0); se aplica escala 0.0001 declarada por la coleccion (offset 0),0.0001,8306,0,0,24,268089,36184,0,22,12,0,36184,Amatitlan,2025-04-28,1.03
 312579,numeros digitales (mediana |v|=2216.0); se aplica escala 0.0001 declarada por la coleccion (offset 0),0.0001,8307,0,4,1,267834,36434,0,178,30,0,36434,Amatitlan,2025-11-24,0.5

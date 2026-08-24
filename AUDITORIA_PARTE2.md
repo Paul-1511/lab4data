@@ -1,6 +1,24 @@
 # Auditoría Técnica Previa a la Parte 2
 ## Laboratorio 4 — Datos Geoespaciales, CC3084
 
+> ## ⚠ Este documento describe el ESTADO PREVIO A LA CORRECCIÓN
+>
+> Se conserva como **registro histórico** del diagnóstico que motivó las correcciones. **No
+> describe el estado actual del proyecto.** Los problemas que enumera ya fueron resueltos:
+>
+> | Hallazgo de esta auditoría | Estado actual |
+> |---|---|
+> | No existía ningún ráster real | **22/22 GeoTIFF Sentinel-2 L1C** descargados y validados |
+> | Cobertura real 0/22 | **22/22** combinaciones lago-fecha |
+> | Se descartaban CRS y transformación afín | Se conservan; dataset en **EPSG:32615** a 20 m |
+> | Faltaban `shap` y `xgboost` | Pendientes de instalar antes del Ejercicio 4 |
+> | Fuga vía NDVI sin analizar | **Analizada y documentada**; NDVI excluido del modelo principal |
+> | Umbral de 50 µg/L sin respaldo | Respuesta principal ahora **8 µg/L** (OECD 1982) |
+>
+> Para el estado vigente consulte `outputs/parte2/reports/preparacion_dataset.md`,
+> `outputs/parte2/reports/threshold_viability.md` y `README.md`.
+
+
 **Alcance:** solo inspección. No se modificó ningún archivo, no se entrenó ningún modelo, no se generó ningún dato.
 **Fecha de auditoría:** 2026-08-23
 **Directorio auditado:** `C:\Users\mjyee\Downloads\DataScience\lab4data\`

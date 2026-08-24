@@ -1,12 +1,12 @@
 variable,tipo,rol,faltantes_pct,motivo
-lake,category,trazabilidad,0.0,"agrupacion, validacion entre lagos y estratificacion"
-date,category,trazabilidad,0.0,validacion temporal y estratificacion
-row,int32,trazabilidad,0.0,reconstruccion espacial del raster
-col,int32,trazabilidad,0.0,reconstruccion espacial del raster
-x_utm,float64,trazabilidad,0.0,bloques espaciales de 1x1 km en EPSG:32615
-y_utm,float64,trazabilidad,0.0,bloques espaciales de 1x1 km en EPSG:32615
-longitude,float64,trazabilidad,0.0,mapas y trazabilidad geografica
-latitude,float64,trazabilidad,0.0,mapas y trazabilidad geografica
+lake,category,excluida_por_fuga,0.0,identifica el lago: usarlo permitiria memorizar diferencias entre cuerpos de agua en vez de aprender la senal espectral
+date,category,excluida_por_fuga,0.0,"memorizacion temporal: el modelo aprenderia la fecha, no el fenomeno"
+row,int32,excluida_por_fuga,0.0,coordenada de rejilla: memorizacion espacial
+col,int32,excluida_por_fuga,0.0,coordenada de rejilla: memorizacion espacial
+x_utm,float64,excluida_por_fuga,0.0,coordenada: memorizacion espacial
+y_utm,float64,excluida_por_fuga,0.0,coordenada: memorizacion espacial
+longitude,float64,excluida_por_fuga,0.0,coordenada: memorizacion espacial
+latitude,float64,excluida_por_fuga,0.0,coordenada: memorizacion espacial
 B02,float32,predictor_principal,0.0,
 B03,float32,predictor_principal,0.0,
 B04,float32,excluida_por_fuga,0.0,"insumo directo de NDCI, que genera la clorofila y la respuesta"
@@ -21,7 +21,12 @@ NDWI,float32,predictor_principal,0.0,
 NDCI,float32,excluida_por_fuga,0.0,indice del que se deriva la clorofila y por tanto la respuesta
 FAI,float32,excluida_por_fuga,0.0,utiliza B04; comparte insumo con NDCI (fuga indirecta)
 chlorophyll,float32,excluida_por_fuga,0.0,variable de la que se deriva directamente la respuesta
-high_cyano_20,int8,excluida_por_fuga,0.0,es la propia respuesta candidata
-high_cyano_25,int8,excluida_por_fuga,0.0,es la propia respuesta candidata
-high_cyano_50,int8,excluida_por_fuga,0.0,es la propia respuesta candidata
-fuera_calibracion,bool,diagnostico,0.0,
+high_cyano_8,int8,respuesta_principal,0.0,es la propia respuesta principal
+high_cyano_20,int8,respuesta_sensibilidad,0.0,es una respuesta candidata (sensibilidad)
+high_cyano_25,int8,respuesta_sensibilidad,0.0,es una respuesta candidata (sensibilidad)
+high_cyano_50,int8,respuesta_sensibilidad,0.0,es una respuesta candidata (sensibilidad)
+fuera_calibracion,bool,excluida_por_fuga,0.0,es un diagnostico derivado de la clorofila
+year,int16,auxiliar_validacion,0.0,memorizacion temporal
+month,int8,auxiliar_validacion,0.0,memorizacion temporal
+season,object,auxiliar_validacion,0.0,memorizacion temporal
+spatial_block_1km,object,auxiliar_validacion,0.0,"identificador de bloque: es una variable de agrupacion para la validacion, no un predictor"

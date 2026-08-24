@@ -75,9 +75,52 @@ ESCALA_REFLECTANCIA = 0.0001
 # Si la mediana de una banda supera este valor, los datos estan en DN.
 UMBRAL_DETECCION_DN = 2.0
 
+# --- Variable respuesta -------------------------------------------------------
 # Umbrales candidatos de clorofila-a (ug/L). Ver justificacion en el reporte.
-UMBRALES_CANDIDATOS = [20.0, 25.0, 50.0]
-UMBRAL_RECOMENDADO = 25.0
+UMBRALES_CANDIDATOS = [8.0, 20.0, 25.0, 50.0]
+
+# Respuesta principal. 8 ug/L es la frontera mesotrofico -> eutrofico de la
+# clasificacion trofica de OECD (1982): operacionaliza "alta presencia" como el
+# punto en que el cuerpo de agua entra en condicion eutrofica, es decir cuando la
+# biomasa algal deja de ser propia de un lago equilibrado.
+#
+# Los otros tres se conservan como analisis de sensibilidad, no como alternativas
+# equivalentes, porque describen situaciones ambientales distintas:
+#   - 20 ug/L: continuidad con el umbral usado en la Parte 1.
+#   - 25 ug/L: frontera eutrofico -> hipertrofico (OECD 1982); condicion severa.
+#   - 50 ug/L: escenario extremo, sin respaldo directo en OECD ni en la OMS.
+#
+# La mayor cantidad de observaciones positivas que produce 8 ug/L es una
+# CONSECUENCIA de haber elegido la transicion eutrofica, no el motivo de la
+# eleccion. El criterio es ambiental; la viabilidad estadistica se documenta
+# aparte, en el analisis de viabilidad.
+#
+# Nota de prudencia: la respuesta representa clorofila-a ALTA ESTIMADA POR
+# SATELITE. No es una confirmacion in situ de presencia de cianobacterias ni de
+# toxicidad; la clorofila mide biomasa fotosintetica, no taxonomia ni toxinas.
+TARGET_COLUMN = "high_cyano_8"
+TARGET_THRESHOLD_UG_L = 8.0
+UMBRAL_RECOMENDADO = TARGET_THRESHOLD_UG_L
+
+SIGNIFICADO_UMBRAL = {
+    8.0: "Transicion aproximada hacia condicion eutrofica (frontera mesotrofico -> "
+         "eutrofico, OECD 1982). Respuesta principal.",
+    20.0: "Continuidad con el umbral empleado en la Parte 1. Dentro de la banda "
+          "eutrofica de OECD (8-25) y del rango de Alerta 1 de la OMS (12-24).",
+    25.0: "Transicion aproximada hacia condicion hipertrofica (OECD 1982); coincide "
+          "con el techo de la Alerta 1 de la OMS (24 ug/L).",
+    50.0: "Escenario extremo para analisis de sensibilidad. No aparece como valor de "
+          "clorofila-a en OECD 1982 ni en las guias de la OMS 2021.",
+}
+
+# --- Version del esquema ------------------------------------------------------
+# Cambia cuando cambian las columnas o la definicion de la respuesta. Las
+# particiones escritas con una version anterior se consideran obsoletas y se
+# reconstruyen, para no mezclar esquemas dentro del mismo dataset.
+DATASET_VERSION = "2.0"
+
+# Tamano nominal del bloque espacial para validacion agrupada (metros, EPSG:32615).
+BLOQUE_ESPACIAL_M = 1000.0
 
 # Dominio de calibracion del modelo NDCI->clorofila (Mishra & Mishra 2012:
 # 1-60 mg/m3 en datos simulados). Fuera de este rango la estimacion se reporta
@@ -101,11 +144,27 @@ EXCLUIDAS_POR_FUGA = {
     "FAI": "utiliza B04; comparte insumo con NDCI (fuga indirecta)",
     "NDVI": "utiliza B04; se conserva porque el enunciado lo exige, pero solo "
             "es admisible en un analisis de sensibilidad etiquetado como fuga indirecta",
-    "high_cyano_20": "es la propia respuesta candidata",
-    "high_cyano_25": "es la propia respuesta candidata",
-    "high_cyano_50": "es la propia respuesta candidata",
+    "high_cyano_8": "es la propia respuesta principal",
+    "high_cyano_20": "es una respuesta candidata (sensibilidad)",
+    "high_cyano_25": "es una respuesta candidata (sensibilidad)",
+    "high_cyano_50": "es una respuesta candidata (sensibilidad)",
     "water_mask": "es un filtro de construccion del dataset, no un predictor",
     "valid_data": "es un filtro de construccion del dataset, no un predictor",
+    "fuera_calibracion": "es un diagnostico derivado de la clorofila",
+    "lake": "identifica el lago: usarlo permitiria memorizar diferencias entre "
+            "cuerpos de agua en vez de aprender la senal espectral",
+    "date": "memorizacion temporal: el modelo aprenderia la fecha, no el fenomeno",
+    "year": "memorizacion temporal",
+    "month": "memorizacion temporal",
+    "season": "memorizacion temporal",
+    "row": "coordenada de rejilla: memorizacion espacial",
+    "col": "coordenada de rejilla: memorizacion espacial",
+    "x_utm": "coordenada: memorizacion espacial",
+    "y_utm": "coordenada: memorizacion espacial",
+    "longitude": "coordenada: memorizacion espacial",
+    "latitude": "coordenada: memorizacion espacial",
+    "spatial_block_1km": "identificador de bloque: es una variable de agrupacion "
+                         "para la validacion, no un predictor",
 }
 
 COLUMNAS_TRAZABILIDAD = {
@@ -117,10 +176,41 @@ COLUMNAS_TRAZABILIDAD = {
     "y_utm": "bloques espaciales de 1x1 km en EPSG:32615",
     "longitude": "mapas y trazabilidad geografica",
     "latitude": "mapas y trazabilidad geografica",
+    "year": "validacion temporal",
+    "month": "estacionalidad y validacion temporal",
+    "season": "estacionalidad (seca / lluviosa)",
+    "spatial_block_1km": "agrupacion para GroupKFold espacial (bloques de 1 km)",
 }
+
+# Variables auxiliares creadas para la validacion. NO entran al conjunto
+# predictor principal: solo sirven para agrupar y estratificar.
+COLUMNAS_AUXILIARES = ["year", "month", "season", "spatial_block_1km"]
 
 BANDAS = list(CYANO_REQUIRED_BANDS)
 INDICES = ["NDVI", "NDWI", "NDCI", "FAI", "chlorophyll"]
+
+
+def _verificar_predictores_sin_fuga():
+    """
+    Impide que una columna prohibida entre al conjunto predictor.
+
+    Se ejecuta al importar el modulo para que el error salte antes de construir
+    nada, no despues de horas de calculo.
+    """
+    intrusas = [c for c in PREDICTORES_PRINCIPALES if c in EXCLUIDAS_POR_FUGA]
+    assert not intrusas, (
+        f"FUGA DE INFORMACION: {intrusas} estan en PREDICTORES_PRINCIPALES pero "
+        "figuran como excluidas.")
+    respuestas = [f"high_cyano_{int(u)}" for u in UMBRALES_CANDIDATOS]
+    solapan = [c for c in PREDICTORES_PRINCIPALES if c in respuestas]
+    assert not solapan, f"FUGA: {solapan} son columnas de respuesta."
+    aux = [c for c in PREDICTORES_PRINCIPALES if c in COLUMNAS_AUXILIARES]
+    assert not aux, f"Las auxiliares {aux} no deben ser predictores."
+    assert TARGET_COLUMN in respuestas, (
+        f"TARGET_COLUMN={TARGET_COLUMN} no coincide con ningun umbral candidato.")
+
+
+_verificar_predictores_sin_fuga()
 
 LOGGER = logging.getLogger("preparar_dataset_ml")
 
@@ -168,6 +258,112 @@ def ruta_raster(lago: str, fecha: str) -> Path:
 
 def ruta_particion(lago: str, fecha: str) -> Path:
     return PIXELS_DIR / f"lake={lago}" / f"date={fecha}" / "part-0.parquet"
+
+
+def columnas_esperadas() -> list:
+    """Esquema canonico de una particion (sin lake/date, que van en la ruta Hive)."""
+    respuestas = [f"high_cyano_{int(u)}" for u in UMBRALES_CANDIDATOS]
+    return (["row", "col", "x_utm", "y_utm", "longitude", "latitude"]
+            + BANDAS + INDICES + ["water_mask", "valid_data"]
+            + respuestas + ["fuera_calibracion"] + COLUMNAS_AUXILIARES)
+
+
+def hash_esquema() -> str:
+    """
+    Huella de la configuracion que determina el contenido de una particion.
+
+    Cambia si cambian las columnas, los umbrales, la respuesta principal o el
+    tamano del bloque espacial. Se guarda en el manifiesto para poder detectar
+    particiones obsoletas sin abrirlas todas.
+    """
+    import hashlib
+    firma = json.dumps({
+        "version": DATASET_VERSION,
+        "columnas": columnas_esperadas(),
+        "umbrales": UMBRALES_CANDIDATOS,
+        "target": TARGET_COLUMN,
+        "bloque_m": BLOQUE_ESPACIAL_M,
+        "calib": [CALIB_MIN, CALIB_MAX],
+    }, sort_keys=True)
+    return hashlib.sha256(firma.encode("utf-8")).hexdigest()[:16]
+
+
+def particion_vigente(lago: str, fecha: str) -> tuple[bool, str]:
+    """
+    Determina si una particion existente corresponde al esquema actual.
+
+    Una particion escrita con un esquema anterior NO se considera valida: se
+    reconstruye. Asi se evita mezclar particiones de versiones distintas dentro
+    del mismo dataset.
+    """
+    ruta = ruta_particion(lago, fecha)
+    if not ruta.exists():
+        return False, "no existe"
+    try:
+        import pyarrow.parquet as pq
+        esquema = pq.read_schema(ruta)
+    except Exception as exc:
+        return False, f"ilegible ({type(exc).__name__})"
+
+    presentes = set(esquema.names)
+    faltan = [c for c in columnas_esperadas() if c not in presentes]
+    if faltan:
+        return False, f"esquema anterior; faltan {faltan[:4]}" + (
+            f" y {len(faltan) - 4} mas" if len(faltan) > 4 else "")
+
+    metadatos = esquema.metadata or {}
+    version = metadatos.get(b"dataset_version", b"").decode("utf-8", "ignore")
+    firma = metadatos.get(b"schema_hash", b"").decode("utf-8", "ignore")
+    if version != DATASET_VERSION or firma != hash_esquema():
+        return False, (f"version {version or 'desconocida'} != {DATASET_VERSION} "
+                       "o configuracion distinta")
+
+    if pq.read_metadata(ruta).num_rows == 0:
+        return False, "particion vacia"
+    return True, "vigente"
+
+
+def escribir_particion(tabla: pd.DataFrame, lago: str, fecha: str) -> Path:
+    """
+    Escribe una particion de forma atomica: primero a un archivo temporal, se
+    valida, y solo entonces se reemplaza la particion definitiva. Si algo falla,
+    la particion anterior permanece intacta.
+    """
+    import pyarrow as pa
+    import pyarrow.parquet as pq
+
+    destino = ruta_particion(lago, fecha)
+    destino.parent.mkdir(parents=True, exist_ok=True)
+    temporal = destino.with_suffix(".tmp.parquet")
+    if temporal.exists():
+        temporal.unlink()
+
+    # lake y date no se guardan dentro del archivo: viajan en la ruta Hive.
+    cuerpo = tabla.drop(columns=["lake", "date"])
+    faltan = [c for c in columnas_esperadas() if c not in cuerpo.columns]
+    if faltan:
+        raise ValueError(f"{lago} {fecha}: faltan columnas {faltan} antes de escribir")
+
+    tabla_arrow = pa.Table.from_pandas(cuerpo, preserve_index=False)
+    tabla_arrow = tabla_arrow.replace_schema_metadata({
+        "dataset_version": DATASET_VERSION,
+        "schema_hash": hash_esquema(),
+        "target_column": TARGET_COLUMN,
+        "target_threshold_ug_L": str(TARGET_THRESHOLD_UG_L),
+        "lake": lago, "date": fecha,
+        "generado": datetime.now().isoformat(timespec="seconds"),
+    })
+    pq.write_table(tabla_arrow, temporal, compression="snappy")
+
+    # Se valida el temporal ANTES de sustituir la particion buena.
+    verificacion = pq.read_metadata(temporal)
+    if verificacion.num_rows != len(cuerpo):
+        temporal.unlink(missing_ok=True)
+        raise ValueError(f"{lago} {fecha}: el temporal tiene "
+                         f"{verificacion.num_rows} filas, se esperaban {len(cuerpo)}")
+
+    temporal.replace(destino)
+    return destino
 
 
 def leer_particion(lago: str, fecha: str) -> pd.DataFrame:
@@ -399,11 +595,31 @@ def construir_tabla_pixeles(info: dict) -> tuple[pd.DataFrame, dict]:
         ).astype(np.int8)
 
     # --- Dominio de calibracion ---
+    # Los valores negativos NO se recortan ni se llevan a cero: son resultado de
+    # evaluar el polinomio NDCI->clorofila fuera de su dominio y se conservan tal
+    # cual para trazabilidad. Se marcan aqui para poder excluirlos en el analisis
+    # sin alterar el dato original.
     tabla["fuera_calibracion"] = (
         (tabla["chlorophyll"] < CALIB_MIN) | (tabla["chlorophyll"] > CALIB_MAX)
     )
     diagnostico["fuera_calibracion"] = int(tabla["fuera_calibracion"].sum())
     diagnostico["chl_negativa"] = int((tabla["chlorophyll"] < 0).sum())
+
+    # --- Variables auxiliares para validacion (no son predictores) ---
+    fecha_dt = pd.Timestamp(info["fecha"])
+    tabla["year"] = np.int16(fecha_dt.year)
+    tabla["month"] = np.int8(fecha_dt.month)
+    # En Guatemala la estacion seca va de noviembre a abril y la lluviosa de mayo
+    # a octubre. Se codifica como texto para que sea legible en las tablas.
+    tabla["season"] = "seca" if fecha_dt.month in (11, 12, 1, 2, 3, 4) else "lluviosa"
+
+    # Bloques de 1x1 km derivados de las coordenadas UTM (EPSG:32615, en metros).
+    # El identificador incluye el lago para que dos lagos no compartan bloque.
+    bloque_col = np.floor(tabla["x_utm"].to_numpy() / BLOQUE_ESPACIAL_M).astype(np.int32)
+    bloque_fila = np.floor(tabla["y_utm"].to_numpy() / BLOQUE_ESPACIAL_M).astype(np.int32)
+    tabla["spatial_block_1km"] = [
+        f"{info['lago']}_{c}_{f}" for c, f in zip(bloque_col, bloque_fila)
+    ]
 
     antes = len(tabla)
     tabla = tabla.drop_duplicates(subset=["lake", "date", "row", "col"])
@@ -546,40 +762,51 @@ def ejecutar_build(args) -> int:
     registros, diagnosticos, errores = [], [], []
     inicio_global = time.time()
 
+    LOGGER.info("Version del dataset: %s (hash de esquema %s)",
+                DATASET_VERSION, hash_esquema())
+    LOGGER.info("Respuesta principal: %s (>= %.1f ug/L)",
+                TARGET_COLUMN, TARGET_THRESHOLD_UG_L)
+    LOGGER.info("")
+
     for lago, fecha in barra(pares, len(pares), "Construyendo"):
         etiqueta = f"{lago} {fecha}"
-        destino = ruta_particion(lago, fecha)
 
-        if destino.exists() and not args.force:
-            try:
-                previo = pd.read_parquet(destino, engine="pyarrow")
-                if len(previo) > 0:
-                    LOGGER.info("[OMITIR] %s ya construido (%s filas).",
-                                etiqueta, f"{len(previo):,}")
-                    registros.append({"lake": lago, "date": fecha,
-                                      "filas": len(previo), "estado": "reutilizado",
-                                      "archivo": str(destino.relative_to(ROOT))})
-                    continue
-            except Exception as exc:
-                LOGGER.warning("[REHACER] %s: particion ilegible (%s).", etiqueta, exc)
+        # Reanudable: solo se reutiliza una particion del esquema ACTUAL. Una
+        # escrita con un esquema anterior se reconstruye, para no mezclar
+        # versiones dentro del mismo dataset.
+        if not args.force:
+            vigente, motivo = particion_vigente(lago, fecha)
+            if vigente:
+                import pyarrow.parquet as pq
+                n = pq.read_metadata(ruta_particion(lago, fecha)).num_rows
+                LOGGER.info("[OMITIR] %s vigente (%s filas).", etiqueta, f"{n:,}")
+                registros.append({"lake": lago, "date": fecha, "filas": n,
+                                  "estado": "reutilizado",
+                                  "dataset_version": DATASET_VERSION,
+                                  "schema_hash": hash_esquema(),
+                                  "archivo": str(ruta_particion(lago, fecha).relative_to(ROOT))})
+                continue
+            if ruta_particion(lago, fecha).exists():
+                LOGGER.info("[MIGRAR] %s: %s", etiqueta, motivo)
 
         try:
             info = inspeccionar_raster(lago, fecha)
             t0 = time.time()
             tabla, diag = construir_tabla_pixeles(info)
-            destino.parent.mkdir(parents=True, exist_ok=True)
-            temporal = destino.with_suffix(".tmp.parquet")
-            # lake y date se omiten del archivo: viajan en la ruta Hive y pyarrow
-            # las reconstruye al leer el dataset particionado.
-            tabla.drop(columns=["lake", "date"]).to_parquet(
-                temporal, engine="pyarrow", compression="snappy", index=False)
-            temporal.replace(destino)
+            destino = escribir_particion(tabla, lago, fecha)
+
+            vigente, motivo = particion_vigente(lago, fecha)
+            if not vigente:
+                raise ValueError(f"la particion escrita no supero la verificacion "
+                                 f"({motivo})")
 
             diag.update({"lake": lago, "date": fecha,
                          "nubosidad_oficial_pct": OFFICIAL_CLOUD_COVER[lago][fecha]})
             diagnosticos.append(diag)
             registros.append({"lake": lago, "date": fecha, "filas": len(tabla),
                               "estado": "construido",
+                              "dataset_version": DATASET_VERSION,
+                              "schema_hash": hash_esquema(),
                               "archivo": str(destino.relative_to(ROOT))})
             LOGGER.info("[OK] %-22s %8s filas de agua  (%.1f s, %.1f MB)",
                         etiqueta, f"{len(tabla):,}", time.time() - t0,
@@ -626,6 +853,263 @@ def cargar_columnas(columnas):
     return pd.read_parquet(PIXELS_DIR, columns=columnas, engine="pyarrow")
 
 
+# ----------------------------------------------------------------------------
+# Analisis de viabilidad estadistica de cada umbral
+# ----------------------------------------------------------------------------
+# Criterios explicitos y prudentes. Un solo pixel positivo NO hace viable un
+# experimento: se exige que la clase rara este presente, repartida y con
+# suficientes grupos para los folds propuestos.
+MIN_POSITIVOS_ENTRENAR = 1000     # minimo absoluto de la clase rara
+MIN_PCT_ENTRENAR = 0.05           # % minimo de la clase rara
+MIN_FECHAS_CON_AMBAS = 3          # fechas con ambas clases para validacion temporal
+N_FOLDS_PROPUESTOS = 5
+MIN_BLOQUES_POSITIVOS = 2 * N_FOLDS_PROPUESTOS  # >=2 bloques positivos por fold
+
+
+def analizar_viabilidad(completo: pd.DataFrame) -> dict:
+    """
+    Evalua, para cada umbral, si sostiene los experimentos de la Parte 2.
+
+    Se calcula sobre el dataset COMPLETO, no sobre la muestra.
+    """
+    respuestas = [f"high_cyano_{int(u)}" for u in UMBRALES_CANDIDATOS]
+    lagos = sorted(completo["lake"].unique())
+    total = len(completo)
+
+    f_global, f_lago, f_fecha, f_bloque, f_conc = [], [], [], [], []
+
+    for umbral, col in zip(UMBRALES_CANDIDATOS, respuestas):
+        pos = int(completo[col].sum())
+        neg = total - pos
+        pct = 100.0 * pos / total if total else 0.0
+
+        por_fecha = completo.groupby(["lake", "date"])[col].agg(["sum", "count"])
+        por_fecha["pos"] = por_fecha["sum"].astype(int)
+        por_fecha["neg"] = (por_fecha["count"] - por_fecha["sum"]).astype(int)
+        fechas_ambas = int(((por_fecha["pos"] > 0) & (por_fecha["neg"] > 0)).sum())
+        fechas_con_pos = int((por_fecha["pos"] > 0).sum())
+
+        por_bloque = completo.groupby("spatial_block_1km")[col].agg(["sum", "count"])
+        por_bloque["pos"] = por_bloque["sum"].astype(int)
+        por_bloque["neg"] = (por_bloque["count"] - por_bloque["sum"]).astype(int)
+        bloques_totales = len(por_bloque)
+        bloques_con_pos = int((por_bloque["pos"] > 0).sum())
+        bloques_ambas = int(((por_bloque["pos"] > 0) & (por_bloque["neg"] > 0)).sum())
+
+        # Concentracion: que fraccion de los positivos vive en los 5 grupos mayores.
+        top5_fechas = por_fecha["pos"].sort_values(ascending=False).head(5)
+        top5_bloques = por_bloque["pos"].sort_values(ascending=False).head(5)
+        conc_fechas = 100.0 * top5_fechas.sum() / pos if pos else 0.0
+        conc_bloques = 100.0 * top5_bloques.sum() / pos if pos else 0.0
+
+        # Numero efectivo de grupos positivos (inverso del indice de Herfindahl):
+        # si los positivos estuvieran repartidos por igual entre N bloques daria N;
+        # si estuvieran todos en uno daria 1. Mide dispersion real, no conteo bruto.
+        p = por_bloque.loc[por_bloque["pos"] > 0, "pos"].to_numpy(dtype=float)
+        efectivo = float((p.sum() ** 2) / (p ** 2).sum()) if p.size else 0.0
+
+        # --- Criterios de viabilidad ---
+        estratificado = pos > 0 and neg > 0 and pos >= N_FOLDS_PROPUESTOS
+        groupkfold = (bloques_con_pos >= MIN_BLOQUES_POSITIVOS
+                      and bloques_ambas >= 1 and efectivo >= N_FOLDS_PROPUESTOS)
+        temporal = fechas_ambas >= MIN_FECHAS_CON_AMBAS
+
+        entrenable, evaluable = {}, {}
+        for lago in lagos:
+            g = completo[completo["lake"] == lago]
+            p_l = int(g[col].sum())
+            n_l = len(g) - p_l
+            pct_l = 100.0 * p_l / len(g) if len(g) else 0.0
+            entrenable[lago] = (p_l >= MIN_POSITIVOS_ENTRENAR
+                                and pct_l >= MIN_PCT_ENTRENAR and n_l > 0)
+            # Para EVALUAR basta con que ambas clases existan, aunque sean pocas.
+            evaluable[lago] = p_l > 0 and n_l > 0
+            f_lago.append({
+                "umbral_ug_L": umbral, "lake": lago, "n_total": len(g),
+                "positivos": p_l, "negativos": n_l, "pct_positivo": pct_l,
+                "entrenable": entrenable[lago], "evaluable": evaluable[lago],
+                "criterio_entrenable": (f">= {MIN_POSITIVOS_ENTRENAR} positivos y "
+                                        f">= {MIN_PCT_ENTRENAR} %"),
+            })
+
+        for (lago, fecha), fila in por_fecha.iterrows():
+            f_fecha.append({
+                "umbral_ug_L": umbral, "lake": lago, "date": fecha,
+                "n_total": int(fila["count"]), "positivos": int(fila["pos"]),
+                "negativos": int(fila["neg"]),
+                "pct_positivo": 100.0 * fila["pos"] / fila["count"],
+                "ambas_clases": bool(fila["pos"] > 0 and fila["neg"] > 0),
+            })
+
+        # Solo se listan los bloques con positivos: los vacios son decenas de miles.
+        for bloque, fila in por_bloque[por_bloque["pos"] > 0].iterrows():
+            f_bloque.append({
+                "umbral_ug_L": umbral, "spatial_block_1km": bloque,
+                "n_total": int(fila["count"]), "positivos": int(fila["pos"]),
+                "negativos": int(fila["neg"]),
+                "pct_positivo": 100.0 * fila["pos"] / fila["count"],
+                "ambas_clases": bool(fila["neg"] > 0),
+            })
+
+        f_conc.append({
+            "umbral_ug_L": umbral, "positivos_totales": pos,
+            "top5_fechas": ";".join(f"{a}|{b}={int(v)}" for (a, b), v in top5_fechas.items()),
+            "pct_positivos_en_top5_fechas": conc_fechas,
+            "top5_bloques": ";".join(f"{k}={int(v)}" for k, v in top5_bloques.items()),
+            "pct_positivos_en_top5_bloques": conc_bloques,
+            "bloques_positivos": bloques_con_pos,
+            "n_efectivo_bloques_positivos": efectivo,
+        })
+
+        f_global.append({
+            "umbral_ug_L": umbral, "es_respuesta_principal": (col == TARGET_COLUMN),
+            "n_total": total, "positivos": pos, "negativos": neg,
+            "pct_positivo": pct,
+            "razon_desbalance": (neg / pos) if pos else np.inf,
+            "fechas_totales": len(por_fecha), "fechas_con_positivos": fechas_con_pos,
+            "fechas_con_ambas_clases": fechas_ambas,
+            "bloques_totales": bloques_totales, "bloques_con_positivos": bloques_con_pos,
+            "bloques_con_ambas_clases": bloques_ambas,
+            "n_efectivo_bloques_positivos": efectivo,
+            "pct_positivos_en_top5_fechas": conc_fechas,
+            "pct_positivos_en_top5_bloques": conc_bloques,
+            "viable_stratified_70_30": estratificado,
+            "viable_groupkfold_bloque": groupkfold,
+            "viable_validacion_temporal": temporal,
+            "entrenable_por_lago": ";".join(f"{l}={entrenable[l]}" for l in lagos),
+            "evaluable_por_lago": ";".join(f"{l}={evaluable[l]}" for l in lagos),
+            "viable_generalizacion_entre_lagos": all(entrenable.values()),
+            "significado_ambiental": SIGNIFICADO_UMBRAL[umbral],
+        })
+
+    TARGET_DIR.mkdir(parents=True, exist_ok=True)
+    pd.DataFrame(f_global).to_csv(TARGET_DIR / "threshold_viability_global.csv", index=False)
+    pd.DataFrame(f_lago).to_csv(TARGET_DIR / "threshold_viability_by_lake.csv", index=False)
+    pd.DataFrame(f_fecha).to_csv(TARGET_DIR / "threshold_viability_by_date.csv", index=False)
+    pd.DataFrame(f_bloque).to_csv(TARGET_DIR / "threshold_viability_by_block.csv", index=False)
+    pd.DataFrame(f_conc).to_csv(TARGET_DIR / "threshold_group_concentration.csv", index=False)
+
+    return {"global": pd.DataFrame(f_global), "lago": pd.DataFrame(f_lago),
+            "concentracion": pd.DataFrame(f_conc)}
+
+
+def escribir_reporte_viabilidad(via: dict, completo: pd.DataFrame) -> None:
+    g = via["global"]
+    lago_df = via["lago"]
+    conc = via["concentracion"]
+    lagos = sorted(completo["lake"].unique())
+    principal = g[g["umbral_ug_L"] == TARGET_THRESHOLD_UG_L].iloc[0]
+
+    ruta = REPORTS_DIR / "threshold_viability.md"
+    REPORTS_DIR.mkdir(parents=True, exist_ok=True)
+    with open(ruta, "w", encoding="utf-8") as fh:
+        w = fh.write
+        w("# Viabilidad estadistica de los umbrales — Laboratorio 4, Parte 2\n\n")
+        w(f"Generado: {datetime.now():%Y-%m-%d %H:%M:%S}  \n")
+        w(f"Dataset: version {DATASET_VERSION}, {len(completo):,} observaciones reales.  \n")
+        w(f"Respuesta principal: **`{TARGET_COLUMN}`** "
+          f"(clorofila-a >= {TARGET_THRESHOLD_UG_L:.0f} ug/L)\n\n")
+
+        w("## Criterios aplicados\n\n")
+        w("Un umbral no se declara viable por tener un pixel positivo. Se exige:\n\n")
+        w(f"- Ambas clases presentes.\n")
+        w(f"- Para **entrenar en un lago**: >= {MIN_POSITIVOS_ENTRENAR} positivos y "
+          f">= {MIN_PCT_ENTRENAR} % de ese lago.\n")
+        w(f"- Para **validacion temporal**: >= {MIN_FECHAS_CON_AMBAS} fechas con ambas clases.\n")
+        w(f"- Para **GroupKFold espacial** con {N_FOLDS_PROPUESTOS} folds: "
+          f">= {MIN_BLOQUES_POSITIVOS} bloques con positivos y numero efectivo de "
+          f"bloques >= {N_FOLDS_PROPUESTOS}, para que ningun fold quede sin clase positiva.\n\n")
+        w("El *numero efectivo de bloques* es el inverso del indice de Herfindahl sobre "
+          "el reparto de positivos: vale N si los positivos se distribuyen por igual "
+          "entre N bloques y 1 si estan todos concentrados en uno. Mide dispersion "
+          "real, no simple conteo.\n\n")
+
+        w("## Resumen por umbral\n\n")
+        w("| Umbral | Positivos | % | Desbalance | Fechas ambas clases | Bloques con "
+          "positivos | N.o efectivo | Stratified | GroupKFold | Temporal | Entre lagos |\n")
+        w("|---|---|---|---|---|---|---|---|---|---|---|\n")
+        for _, r in g.iterrows():
+            marca = " **(principal)**" if r["es_respuesta_principal"] else ""
+            w(f"| {r['umbral_ug_L']:.0f}{marca} | {int(r['positivos']):,} | "
+              f"{r['pct_positivo']:.4f} % | 1:{r['razon_desbalance']:.0f} | "
+              f"{int(r['fechas_con_ambas_clases'])}/{int(r['fechas_totales'])} | "
+              f"{int(r['bloques_con_positivos'])}/{int(r['bloques_totales'])} | "
+              f"{r['n_efectivo_bloques_positivos']:.1f} | "
+              f"{'Si' if r['viable_stratified_70_30'] else 'No'} | "
+              f"{'Si' if r['viable_groupkfold_bloque'] else 'No'} | "
+              f"{'Si' if r['viable_validacion_temporal'] else 'No'} | "
+              f"{'Si' if r['viable_generalizacion_entre_lagos'] else 'No'} |\n")
+
+        w("\n## Por lago\n\n")
+        w("| Umbral | Lago | Positivos | Negativos | % | Entrenable | Evaluable |\n")
+        w("|---|---|---|---|---|---|---|\n")
+        for _, r in lago_df.iterrows():
+            w(f"| {r['umbral_ug_L']:.0f} | {r['lake']} | {int(r['positivos']):,} | "
+              f"{int(r['negativos']):,} | {r['pct_positivo']:.4f} % | "
+              f"{'Si' if r['entrenable'] else 'No'} | "
+              f"{'Si' if r['evaluable'] else 'No'} |\n")
+
+        w("\n## Concentracion de los positivos\n\n")
+        w("| Umbral | % de positivos en las 5 fechas principales | % en los 5 bloques "
+          "principales | Bloques positivos | N.o efectivo |\n|---|---|---|---|---|\n")
+        for _, r in conc.iterrows():
+            w(f"| {r['umbral_ug_L']:.0f} | {r['pct_positivos_en_top5_fechas']:.1f} % | "
+              f"{r['pct_positivos_en_top5_bloques']:.1f} % | "
+              f"{int(r['bloques_positivos'])} | "
+              f"{r['n_efectivo_bloques_positivos']:.1f} |\n")
+
+        w(f"\n## Desbalance de la respuesta principal ({TARGET_THRESHOLD_UG_L:.0f} ug/L)\n\n")
+        w(f"- **Desbalance global:** {int(principal['positivos']):,} positivos frente a "
+          f"{int(principal['negativos']):,} negativos "
+          f"({principal['pct_positivo']:.3f} %), razon "
+          f"**1:{principal['razon_desbalance']:.0f}**.\n")
+        for lago in lagos:
+            r = lago_df[(lago_df["umbral_ug_L"] == TARGET_THRESHOLD_UG_L)
+                        & (lago_df["lake"] == lago)].iloc[0]
+            w(f"- **{lago}:** {int(r['positivos']):,} positivos "
+              f"({r['pct_positivo']:.4f} %). Entrenable: "
+              f"{'si' if r['entrenable'] else 'NO'}.\n")
+        w(f"- **Diferencia entre lagos:** la prevalencia no es comparable entre ambos, "
+          "asi que un modelo entrenado en uno vera una frecuencia de la clase positiva "
+          "muy distinta a la del otro.\n")
+        w(f"- **Diferencia entre fechas:** solo "
+          f"{int(principal['fechas_con_ambas_clases'])} de "
+          f"{int(principal['fechas_totales'])} combinaciones lago-fecha contienen ambas "
+          "clases.\n")
+        w(f"- **Dependencia espacial:** el "
+          f"{principal['pct_positivos_en_top5_bloques']:.1f} % de los positivos se "
+          "concentra en solo 5 bloques de 1 km. Los positivos no son independientes "
+          "entre si: estan agrupados espacialmente.\n\n")
+
+        w("### Riesgos derivados\n\n")
+        w(f"- **Accuracy enganosa.** Un clasificador que prediga siempre la clase "
+          f"mayoritaria acertaria el {100 - principal['pct_positivo']:.3f} % sin "
+          "detectar ni una sola floracion.\n")
+        w("- **Folds sin positivos.** Con particion aleatoria simple algunos pliegues "
+          "podrian quedarse sin clase positiva; con agrupacion espacial el riesgo "
+          "aumenta porque los positivos estan concentrados.\n")
+        w("- **Optimismo por autocorrelacion espacial.** Sin agrupar por bloque, "
+          "pixeles vecinos casi identicos caerian en entrenamiento y prueba a la vez.\n")
+        w("- **Colapso a la clase mayoritaria** durante el entrenamiento si no se "
+          "compensa el desbalance.\n\n")
+
+        w("### Recomendaciones para el Ejercicio 4 (no implementadas todavia)\n\n")
+        w("- `class_weight=\"balanced\"` en Regresion Logistica y Random Forest.\n")
+        w("- `scale_pos_weight = n_negativos / n_positivos` en XGBoost.\n")
+        w("- Reportar **PR-AUC** ademas de Accuracy, Precision, Recall, F1 y ROC-AUC: "
+          "con esta prevalencia la curva ROC resulta demasiado optimista.\n")
+        w("- Reportar **Recall y F1 de la clase positiva** por separado, no solo macro.\n")
+        w("- Ajustar el **umbral de decision** usando solo entrenamiento/validacion, "
+          "nunca el conjunto de prueba.\n")
+        w("- **No aplicar SMOTE ni sobremuestreo antes de separar los grupos**: "
+          "generaria vecinos sinteticos a partir de pixeles que luego caerian en el "
+          "conjunto de prueba, inflando el desempeno.\n")
+        w("- Conservar los grupos espaciales (`spatial_block_1km`) y temporales "
+          "(`date`) intactos durante toda la particion.\n")
+
+    LOGGER.info("  Reporte de viabilidad: %s", ruta.relative_to(ROOT))
+
+
 def generar_analisis(registros, diagnosticos) -> None:
     import matplotlib
     matplotlib.use("Agg")
@@ -638,12 +1122,18 @@ def generar_analisis(registros, diagnosticos) -> None:
 
     # --- Conteos y balance sobre el DATASET COMPLETO ---
     completo = cargar_columnas(
-        ["lake", "date", "chlorophyll", "fuera_calibracion"] + columnas_respuesta
+        ["lake", "date", "chlorophyll", "fuera_calibracion",
+         "spatial_block_1km", "year", "month", "season"] + columnas_respuesta
     )
     completo["lake"] = completo["lake"].astype(str)
     completo["date"] = completo["date"].astype(str)
     total = len(completo)
     LOGGER.info("  Filas totales (dataset completo): %s", f"{total:,}")
+
+    # --- Viabilidad estadistica de cada umbral (dataset completo) ---
+    LOGGER.info("  Analizando viabilidad de los umbrales...")
+    viabilidad = analizar_viabilidad(completo)
+    escribir_reporte_viabilidad(viabilidad, completo)
 
     por_lago = completo.groupby("lake").size().rename("observaciones")
     por_fecha = completo.groupby(["lake", "date"]).size().rename("observaciones")
@@ -705,7 +1195,8 @@ def generar_analisis(registros, diagnosticos) -> None:
     # --- Muestra determinista para figuras ---
     muestra_n = min(MUESTRA_EDA, total)
     todas = ["lake", "date", "row", "col", "x_utm", "y_utm", "longitude", "latitude"] \
-        + columnas_numericas + columnas_respuesta + ["fuera_calibracion"]
+        + columnas_numericas + columnas_respuesta \
+        + ["fuera_calibracion"] + COLUMNAS_AUXILIARES
     completo_full = cargar_columnas(todas)
     muestra = completo_full.sample(n=muestra_n, random_state=SEED).reset_index(drop=True)
     muestra.to_parquet(DATA_DIR / "eda_sample.parquet", engine="pyarrow",
@@ -716,10 +1207,16 @@ def generar_analisis(registros, diagnosticos) -> None:
     esquema = []
     for col in completo_full.columns:
         serie = completo_full[col]
-        if col in EXCLUIDAS_POR_FUGA:
-            rol = "excluida_por_fuga"
-        elif col in PREDICTORES_PRINCIPALES:
+        if col in PREDICTORES_PRINCIPALES:
             rol = "predictor_principal"
+        elif col == TARGET_COLUMN:
+            rol = "respuesta_principal"
+        elif col in columnas_respuesta:
+            rol = "respuesta_sensibilidad"
+        elif col in COLUMNAS_AUXILIARES:
+            rol = "auxiliar_validacion"
+        elif col in EXCLUIDAS_POR_FUGA:
+            rol = "excluida_por_fuga"
         elif col in COLUMNAS_TRAZABILIDAD:
             rol = "trazabilidad"
         else:
@@ -819,6 +1316,45 @@ def generar_analisis(registros, diagnosticos) -> None:
     fig.tight_layout(); fig.savefig(EDA_DIR / "spatial_sample.png", dpi=150)
     plt.close(fig)
 
+    # --- Bloques espaciales de 1 km y concentracion de la clase positiva ---
+    resumen_bloques = (completo.groupby(["lake", "spatial_block_1km"])
+                       .agg(n=("chlorophyll", "size"),
+                            positivos=(TARGET_COLUMN, "sum"))
+                       .reset_index())
+    resumen_bloques["pct_positivo"] = (
+        100.0 * resumen_bloques["positivos"] / resumen_bloques["n"])
+    resumen_bloques.to_csv(DATA_DIR / "resumen_bloques_1km.csv", index=False)
+
+    fig, axes = plt.subplots(1, 3, figsize=(19, 5.6))
+    conteo = resumen_bloques.groupby("lake")["spatial_block_1km"].nunique()
+    axes[0].bar(conteo.index, conteo.values, color=["#4878a8", "#c44e52"])
+    axes[0].set_title(f"Bloques de {BLOQUE_ESPACIAL_M:.0f} m por lago", fontweight="bold")
+    axes[0].set_ylabel("N.o de bloques")
+    for i, v in enumerate(conteo.values):
+        axes[0].text(i, v, str(v), ha="center", va="bottom", fontweight="bold")
+
+    sns.histplot(resumen_bloques["n"], bins=40, ax=axes[1], color="#4878a8")
+    axes[1].set_title("Observaciones por bloque", fontweight="bold")
+    axes[1].set_xlabel("Pixeles en el bloque"); axes[1].set_ylabel("N.o de bloques")
+
+    con_pos = resumen_bloques[resumen_bloques["positivos"] > 0]
+    for lago, g in muestra.groupby("lake", observed=True):
+        axes[2].scatter(g["x_utm"], g["y_utm"], s=1, alpha=0.12, color="#bbbbbb")
+    if not con_pos.empty:
+        centros = (completo[completo[TARGET_COLUMN] == 1]
+                   .groupby("spatial_block_1km")[["chlorophyll"]].size())
+        pos_muestra = muestra[muestra[TARGET_COLUMN] == 1]
+        axes[2].scatter(pos_muestra["x_utm"], pos_muestra["y_utm"], s=4,
+                        color="#c44e52", label=f"{TARGET_COLUMN} = 1")
+        axes[2].legend()
+    axes[2].set_title(f"Ubicacion de la clase positiva ({TARGET_THRESHOLD_UG_L:.0f} ug/L)",
+                      fontweight="bold")
+    axes[2].set_xlabel("x UTM (m)"); axes[2].set_ylabel("y UTM (m)")
+    fig.suptitle("Bloques espaciales para validacion agrupada (EPSG:32615)",
+                 fontsize=14, fontweight="bold")
+    fig.tight_layout(); fig.savefig(EDA_DIR / "spatial_blocks.png", dpi=150)
+    plt.close(fig)
+
     escribir_reporte(completo, filas_global, filas_lago, filas_fecha,
                      estad_chl, diagnosticos, esquema, muestra_n)
 
@@ -896,6 +1432,25 @@ def escribir_reporte(completo, filas_global, filas_lago, filas_fecha,
         w("- **Nivel L1C:** son reflectancias de tope de atmosfera, sin correccion "
           "atmosferica. El algoritmo NDCI fue disenado para L1C, pero esto anade "
           "incertidumbre a la magnitud absoluta de la clorofila.\n")
+        w("- **Estimador satelital, no medicion in situ:** el algoritmo reporta "
+          "**MAPE 42.3 %** y **RMSE relativo 95.8 %**, y fue calibrado para "
+          "*Microcystis aeruginosa* sobre datos simulados. En este laboratorio no se "
+          "realizo ninguna validacion de campo.\n")
+
+        w("\n#### Advertencia sobre el Lago de Atitlan\n\n")
+        fuera_por_lago = (completo.groupby("lake")["fuera_calibracion"]
+                          .mean().mul(100).round(2).to_dict())
+        w("> El estimador satelital muestra concentraciones generalmente menores en "
+          "Atitlan que en Amatitlan durante las fechas estudiadas; sin embargo, una "
+          "proporcion importante de sus pixeles cae fuera del dominio de calibracion, "
+          "por lo que los valores absolutos requieren validacion in situ.\n\n")
+        w("Porcentaje de observaciones fuera del dominio de calibracion "
+          f"[{CALIB_MIN:.0f}, {CALIB_MAX:.0f}] ug/L, por lago:\n\n")
+        for lago_n, pct_fuera in sorted(fuera_por_lago.items()):
+            w(f"- **{lago_n}:** {pct_fuera:.2f} %\n")
+        w("\nPor tanto, la conclusion defendible es **comparativa** (Atitlan presenta "
+          "valores estimados menores que Amatitlan en estas fechas), no absoluta: no "
+          "procede afirmar sin mas que Atitlan esta \"limpio\".\n")
 
         w("\n---\n\n## 2. Variable respuesta\n\n")
         w("### 2.1 Distribucion real de la clorofila-a\n\n")
@@ -945,36 +1500,38 @@ def escribir_reporte(completo, filas_global, filas_lago, filas_fecha,
         for lago in lagos:
             w(f" % alta {lago} |")
         w("\n|---|---|---|" + "---|" * len(lagos) + "\n")
-        respaldo = {
-            20.0: "Dentro de la banda eutrofica OECD (8-25) y del rango de Alerta 1 de "
-                  "la WHO. Es el umbral usado en la Parte 1, pero no es una frontera publicada.",
-            25.0: "**Frontera eutrofico -> hipertrofico de OECD (1982)**, que coincide "
-                  "con el techo de la Alerta 1 de la WHO (24 ug/L). Dos fuentes "
-                  "independientes convergen aqui.",
-            50.0: "**Sin respaldo en las fuentes citadas.** No aparece en OECD 1982 ni "
-                  "como valor de clorofila en WHO 2021. En `lab4-2.ipynb` se justifico "
-                  "como 'criterio mas conservador', lo que es una eleccion arbitraria.",
-        }
         for umbral in UMBRALES_CANDIDATOS:
-            w(f"| {umbral:.0f} ug/L | {respaldo[umbral]} | {pct(umbral):.3f} % |")
+            marca = " **(principal)**" if umbral == TARGET_THRESHOLD_UG_L else ""
+            w(f"| {umbral:.0f} ug/L{marca} | {SIGNIFICADO_UMBRAL[umbral]} | "
+              f"{pct(umbral):.3f} % |")
             for lago in lagos:
                 w(f" {pct(umbral, lago):.3f} % |")
             w("\n")
 
-        w(f"\n### 2.4 Umbral recomendado: **{UMBRAL_RECOMENDADO:.0f} ug/L**\n\n")
-        w("Se recomienda como respuesta principal `high_cyano_25` porque es la unica "
-          "de las tres candidatas que corresponde a una **frontera publicada**: separa "
-          "el estado eutrofico del hipertrofico en OECD (1982) y coincide practicamente "
-          "con el limite superior de la Alerta 1 de la WHO (24 ug/L). Ambientalmente "
-          "marca el punto en que la biomasa algal deja de ser alta para pasar a ser "
-          "caracteristica de un sistema degradado.\n\n")
-        w("**Analisis de sensibilidad recomendado:** repetir el modelado con "
-          "`high_cyano_20` (continuidad con la Parte 1 y con el rango de vigilancia de "
-          "la WHO). Se descarta 50 ug/L como respuesta principal por carecer de "
-          "respaldo bibliografico en las fuentes citadas.\n\n")
-        w("La eleccion **no se hizo por balance de clases**: como muestra la tabla "
-          "anterior, los tres umbrales producen un desbalance severo, y el recomendado "
-          "no es el que mas favorece el entrenamiento.\n")
+        w(f"\n### 2.4 Respuesta principal: `{TARGET_COLUMN}` "
+          f"(>= {TARGET_THRESHOLD_UG_L:.0f} ug/L)\n\n")
+        w(f"Se adopta **{TARGET_THRESHOLD_UG_L:.0f} ug/L** como respuesta principal "
+          "porque representa la **transicion aproximada hacia la condicion eutrofica**: "
+          "es la frontera mesotrofico -> eutrofico de la clasificacion trofica de OECD "
+          "(1982). Operacionaliza \"alta presencia\" como el punto en que la biomasa "
+          "algal deja de ser la propia de un lago equilibrado y el cuerpo de agua entra "
+          "en un regimen de exceso de nutrientes.\n\n")
+        w("Los otros tres umbrales **no son alternativas equivalentes**: describen "
+          "situaciones ambientales distintas y se conservan como analisis de "
+          "sensibilidad.\n\n")
+        w("- **20 ug/L**: mantiene la continuidad con el umbral usado en la Parte 1.\n")
+        w("- **25 ug/L**: representa una condicion **hipertrofica**, es decir un estado "
+          "mas severo que el que se quiere detectar como \"alta presencia\".\n")
+        w("- **50 ug/L**: se conserva como **escenario extremo**.\n\n")
+        w("La eleccion es **ambiental**. Que 8 ug/L produzca ademas mas observaciones "
+          "positivas es una **consecuencia secundaria** de haber escogido la transicion "
+          "eutrofica, no el criterio de seleccion: la viabilidad estadistica se analiza "
+          "por separado en `threshold_viability.md` y no intervino en la definicion del "
+          "umbral.\n\n")
+        w("> **Prudencia en la interpretacion.** La variable respuesta indica "
+          "**clorofila-a alta estimada por satelite**, no una confirmacion in situ de "
+          "presencia de cianobacterias ni de toxicidad. La clorofila mide biomasa "
+          "fotosintetica total: no identifica especies ni toxinas.\n")
 
         w("\n### 2.5 Advertencia critica sobre el desbalance\n\n")
         for f in filas_global:
@@ -1148,6 +1705,43 @@ def ejecutar_validate(args) -> int:
                     criticos.append(f"{lago} {fecha}: {col} no es coherente con "
                                     "chlorophyll")
 
+        # --- Version de esquema de la particion ---
+        vigente, motivo = particion_vigente(lago, fecha)
+        if not vigente:
+            criticos.append(f"{lago} {fecha}: particion no vigente ({motivo})")
+
+        # --- Identificadores espaciales de 1 km ---
+        if "spatial_block_1km" in df.columns:
+            bloques = df["spatial_block_1km"].astype(str)
+            if bloques.isna().any() or (bloques == "").any():
+                criticos.append(f"{lago} {fecha}: bloques espaciales vacios")
+            if not bloques.str.startswith(f"{lago}_").all():
+                criticos.append(f"{lago} {fecha}: hay bloques que no llevan el prefijo "
+                                "del lago (riesgo de colision entre lagos)")
+            # El bloque debe reproducirse exactamente desde las coordenadas UTM.
+            bc = np.floor(df["x_utm"].to_numpy() / BLOQUE_ESPACIAL_M).astype(np.int32)
+            bf = np.floor(df["y_utm"].to_numpy() / BLOQUE_ESPACIAL_M).astype(np.int32)
+            recalculado = pd.Series([f"{lago}_{c}_{f}" for c, f in zip(bc, bf)],
+                                    index=df.index)
+            if not recalculado.equals(bloques):
+                criticos.append(f"{lago} {fecha}: spatial_block_1km no coincide con "
+                                "las coordenadas UTM")
+            # Extension real de cada bloque: debe caber en 1 km.
+            ext_x = df.groupby(bloques)["x_utm"].agg(lambda s: s.max() - s.min()).max()
+            ext_y = df.groupby(bloques)["y_utm"].agg(lambda s: s.max() - s.min()).max()
+            if ext_x >= BLOQUE_ESPACIAL_M or ext_y >= BLOQUE_ESPACIAL_M:
+                criticos.append(f"{lago} {fecha}: un bloque abarca "
+                                f"{max(ext_x, ext_y):.0f} m, mas de "
+                                f"{BLOQUE_ESPACIAL_M:.0f} m")
+
+        # --- Variables temporales coherentes con la fecha de la particion ---
+        if {"year", "month", "season"}.issubset(df.columns):
+            ts = pd.Timestamp(fecha)
+            if int(df["year"].iloc[0]) != ts.year or int(df["month"].iloc[0]) != ts.month:
+                criticos.append(f"{lago} {fecha}: year/month no coinciden con la fecha")
+            if df["year"].nunique() != 1 or df["month"].nunique() != 1:
+                criticos.append(f"{lago} {fecha}: year/month no son constantes")
+
     lineas.append(f"Filas totales         : {total:,}")
 
     # Comprobaciones globales
@@ -1165,18 +1759,83 @@ def ejecutar_validate(args) -> int:
         TARGET_DIR / "target_distribution_global.csv",
         TARGET_DIR / "target_distribution_by_lake.csv",
         TARGET_DIR / "target_distribution_by_date.csv",
+        TARGET_DIR / "threshold_viability_global.csv",
+        TARGET_DIR / "threshold_viability_by_lake.csv",
+        TARGET_DIR / "threshold_viability_by_date.csv",
+        TARGET_DIR / "threshold_viability_by_block.csv",
+        TARGET_DIR / "threshold_group_concentration.csv",
         REPORTS_DIR / "preparacion_dataset.md",
+        REPORTS_DIR / "threshold_viability.md",
+        EDA_DIR / "spatial_blocks.png",
+        EDA_DIR / "target_balance.png",
+        EDA_DIR / "correlation_matrix.png",
     ]:
         if not artefacto.exists():
-            avisos.append(f"No se genero {artefacto.relative_to(ROOT)}")
+            criticos.append(f"Falta el artefacto {artefacto.relative_to(ROOT)}")
 
-    fuga = [c for c in PREDICTORES_PRINCIPALES if c in EXCLUIDAS_POR_FUGA]
+    # --- Respuesta principal y sensibilidad ---
+    if esquema_ref:
+        if TARGET_COLUMN not in esquema_ref:
+            criticos.append(f"Falta la respuesta principal {TARGET_COLUMN}")
+        else:
+            lineas.append(f"Respuesta principal   : {TARGET_COLUMN} "
+                          f"(>= {TARGET_THRESHOLD_UG_L:.0f} ug/L)")
+        ausentes_sens = [c for c in columnas_respuesta if c not in esquema_ref]
+        if ausentes_sens:
+            criticos.append(f"Faltan respuestas de sensibilidad: {ausentes_sens}")
+        else:
+            lineas.append(f"Respuestas totales    : {len(columnas_respuesta)} "
+                          f"({', '.join(columnas_respuesta)})")
+        ausentes_aux = [c for c in COLUMNAS_AUXILIARES if c not in esquema_ref]
+        if ausentes_aux:
+            criticos.append(f"Faltan variables auxiliares: {ausentes_aux}")
+
+    # --- Fuga de informacion ---
+    prohibidas = set(EXCLUIDAS_POR_FUGA) | set(columnas_respuesta) | set(COLUMNAS_AUXILIARES)
+    fuga = [c for c in PREDICTORES_PRINCIPALES if c in prohibidas]
     if fuga:
-        criticos.append(f"El conjunto predictor contiene variables con fuga: {fuga}")
+        criticos.append(f"El conjunto predictor contiene variables prohibidas: {fuga}")
     else:
-        lineas.append("Fuga de informacion   : el conjunto predictor principal "
-                      f"{PREDICTORES_PRINCIPALES} no contiene ninguna variable "
-                      "de la cadena de la respuesta")
+        lineas.append(f"Predictores sin fuga  : {len(PREDICTORES_PRINCIPALES)} "
+                      f"({', '.join(PREDICTORES_PRINCIPALES)})")
+    for obligatoria in ["B04", "B05", "NDCI", "chlorophyll", "FAI", "NDVI",
+                        "water_mask", "valid_data", "lake", "date", "year",
+                        "month", "season", "row", "col", "x_utm", "y_utm",
+                        "longitude", "latitude", "spatial_block_1km"]:
+        if obligatoria in PREDICTORES_PRINCIPALES:
+            criticos.append(f"{obligatoria} NO puede ser predictor principal")
+
+    # --- El notebook usa el dataset real ---
+    nb = ROOT / "lab4-2.ipynb"
+    if not nb.exists():
+        criticos.append("No existe lab4-2.ipynb")
+    else:
+        texto_nb = nb.read_text(encoding="utf-8")
+        usa_real = "outputs/parte2" in texto_nb or "parte2" in texto_nb
+        genera_sintetico = "synthetic_bands" in texto_nb or "rng.normal(0.0" in texto_nb
+        modo_demo = "demostrativo parametrizado" in texto_nb
+        lineas.append(f"Notebook con dataset real: {usa_real}")
+        if not usa_real:
+            criticos.append("lab4-2.ipynb no carga el dataset real de outputs/parte2")
+        if genera_sintetico or modo_demo:
+            criticos.append("lab4-2.ipynb conserva el generador sintetico en el flujo "
+                            "principal")
+        import json as _json
+        try:
+            nb_json = _json.loads(texto_nb)
+            ejecutadas = sum(1 for c in nb_json["cells"]
+                             if c["cell_type"] == "code" and c.get("execution_count"))
+            errores_nb = sum(1 for c in nb_json["cells"]
+                             for o in c.get("outputs", [])
+                             if o.get("output_type") == "error")
+            lineas.append(f"Notebook ejecutado    : {ejecutadas} celdas, "
+                          f"{errores_nb} errores")
+            if errores_nb:
+                criticos.append(f"lab4-2.ipynb tiene {errores_nb} celdas con error")
+            if ejecutadas == 0:
+                criticos.append("lab4-2.ipynb no esta ejecutado")
+        except Exception as exc:
+            criticos.append(f"lab4-2.ipynb ilegible: {exc}")
 
     _escribir_validacion(reporte, lineas, criticos, avisos)
 

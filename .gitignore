@@ -15,3 +15,8 @@ outputs/parte2/data/pixels/
 outputs/parte1_real/logs/
 outputs/parte2/logs/
 outputs/logs/
+
+# Muestra EDA (9 MB) y temporales: regenerables con --build
+outputs/parte2/data/eda_sample.parquet
+outputs/parte2/**/*.tmp
+outputs/parte2/**/*.tmp.parquet
