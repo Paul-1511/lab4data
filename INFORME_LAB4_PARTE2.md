@@ -3,6 +3,7 @@
 
 **Universidad del Valle de Guatemala — CC3084 Data Science**
 Semilla: 42 · Dataset versión 2.0 · Perfil: **standard** (único perfil con resultados entregables)
+**Integrantes:** Méndez Alvarado, Pablo José; Yee Vidal, María José.
 
 Lagos de Atitlán y Amatitlán · 22 escenas Sentinel-2 L1C reales · 3,756,510 observaciones de agua · EPSG:32615 a 20 m (0.04 ha/píxel)
 

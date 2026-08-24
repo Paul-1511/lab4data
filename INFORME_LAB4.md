@@ -3,7 +3,6 @@
 
 **Laboratorio 4, Parte 1 — Análisis de Datos Geoespaciales**
 **Universidad del Valle de Guatemala (UVG) — CC3084 Data Science**
-**Autor:** myee
 **Fecha:** 23 de agosto de 2026
 **Datos:** 22 imágenes Sentinel-2 L1C reales (11 fechas por lago, enero 2025 – julio 2026)
 
