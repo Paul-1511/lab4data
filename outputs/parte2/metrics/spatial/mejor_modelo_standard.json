@@ -1,0 +1,6 @@
+{
+  "mejor_modelo": "random_forest",
+  "pr_auc_medio": 0.9758,
+  "criterio": "mayor PR-AUC medio en validacion espacial",
+  "perfil": "standard"
+}

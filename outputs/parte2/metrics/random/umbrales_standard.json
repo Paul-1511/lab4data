@@ -1,0 +1,29 @@
+{
+  "logistic": {
+    "umbral": 0.9722217321395874,
+    "criterio": "Recall >= 0.80 y, entre esos, maxima Precision",
+    "recall_minimo_exigido": 0.8,
+    "recall_validacion": 0.8,
+    "precision_validacion": 0.8859660660265685,
+    "f2_validacion": 0.8158321827386575,
+    "origen": "validacion interna del entrenamiento (nunca el test)"
+  },
+  "random_forest": {
+    "umbral": 0.9407730597461879,
+    "criterio": "Recall >= 0.80 y, entre esos, maxima Precision",
+    "recall_minimo_exigido": 0.8,
+    "recall_validacion": 0.8001187648456057,
+    "precision_validacion": 0.9873955737945186,
+    "f2_validacion": 0.8316667901143125,
+    "origen": "validacion interna del entrenamiento (nunca el test)"
+  },
+  "xgboost": {
+    "umbral": 0.9964532852172852,
+    "criterio": "Recall >= 0.80 y, entre esos, maxima Precision",
+    "recall_minimo_exigido": 0.8,
+    "recall_validacion": 0.801187648456057,
+    "precision_validacion": 0.9887146416532318,
+    "f2_validacion": 0.8327778189269931,
+    "origen": "validacion interna del entrenamiento (nunca el test)"
+  }
+}

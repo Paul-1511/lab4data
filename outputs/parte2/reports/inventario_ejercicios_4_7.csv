@@ -1,0 +1,46 @@
+ruta,tipo,tamano_kb,perfil,ejercicio,estado_validacion
+outputs/parte2/figures/cross_lake/comparativa_metricas_A.png,png,32.2,standard,7 (generalizacion entre lagos),OK
+outputs/parte2/figures/cross_lake/comparativa_metricas_B.png,png,33.9,standard,7 (generalizacion entre lagos),OK
+outputs/parte2/figures/cross_lake/curvas_roc_pr_A.png,png,95.0,standard,7 (generalizacion entre lagos),OK
+outputs/parte2/figures/cross_lake/curvas_roc_pr_B.png,png,90.4,standard,7 (generalizacion entre lagos),OK
+outputs/parte2/figures/cross_lake/matrices_confusion_A.png,png,49.3,standard,7 (generalizacion entre lagos),OK
+outputs/parte2/figures/cross_lake/matrices_confusion_B.png,png,49.4,standard,7 (generalizacion entre lagos),OK
+outputs/parte2/figures/cross_lake/probabilidades_A.png,png,74.1,standard,7 (generalizacion entre lagos),OK
+outputs/parte2/figures/cross_lake/probabilidades_B.png,png,69.1,standard,7 (generalizacion entre lagos),OK
+outputs/parte2/figures/random/comparativa_metricas.png,png,31.9,standard,4 y 5 (division 70/30 y evaluacion),OK
+outputs/parte2/figures/random/curvas_roc_pr.png,png,87.4,standard,4 y 5 (division 70/30 y evaluacion),OK
+outputs/parte2/figures/random/matrices_confusion.png,png,49.1,standard,4 y 5 (division 70/30 y evaluacion),OK
+outputs/parte2/figures/random/probabilidades.png,png,69.2,standard,4 y 5 (division 70/30 y evaluacion),OK
+outputs/parte2/figures/spatial/folds_espaciales_standard.png,png,71.5,standard,6 (validacion espacial),OK
+outputs/parte2/metrics/consolidado_standard.csv,csv,30.2,standard,auxiliar,OK
+outputs/parte2/metrics/cross_lake/checkpoint_standard.json,json,0.1,standard,7 (generalizacion entre lagos),OK
+outputs/parte2/metrics/cross_lake/metricas_standard.csv,csv,2.0,standard,7 (generalizacion entre lagos),OK
+outputs/parte2/metrics/random/importancias_standard.json,json,0.8,standard,4 y 5 (division 70/30 y evaluacion),OK
+outputs/parte2/metrics/random/metricas_standard.csv,csv,2.2,standard,4 y 5 (division 70/30 y evaluacion),OK
+outputs/parte2/metrics/random/umbrales_standard.json,json,1.1,standard,4 y 5 (division 70/30 y evaluacion),OK
+outputs/parte2/metrics/spatial/agregado_standard.csv,csv,1.1,standard,6 (validacion espacial),OK
+outputs/parte2/metrics/spatial/checkpoint_standard.json,json,0.1,standard,6 (validacion espacial),OK
+outputs/parte2/metrics/spatial/mejor_modelo_standard.json,json,0.1,standard,6 (validacion espacial),OK
+outputs/parte2/metrics/spatial/metricas_por_fold_standard.csv,csv,6.0,standard,6 (validacion espacial),OK
+outputs/parte2/metrics/temporal/agregado_estables_standard.csv,csv,0.2,standard,"6 (validacion temporal, rubrica)",OK
+outputs/parte2/metrics/temporal/agregado_standard.csv,csv,0.6,standard,"6 (validacion temporal, rubrica)",OK
+outputs/parte2/metrics/temporal/checkpoint_standard.json,json,0.1,standard,"6 (validacion temporal, rubrica)",OK
+outputs/parte2/metrics/temporal/metricas_por_fold_standard.csv,csv,18.9,standard,"6 (validacion temporal, rubrica)",OK
+outputs/parte2/models/logistic_random_standard.joblib,joblib,1.0,standard,4 (modelos entrenados),OK
+outputs/parte2/models/random_forest_random_standard.joblib,joblib,10222.9,standard,4 (modelos entrenados),OK
+outputs/parte2/models/xgboost_random_standard.joblib,joblib,2627.9,standard,4 (modelos entrenados),OK
+outputs/parte2/reports/dry_run_plan_standard.json,json,10.4,standard,4-7 (reportes),OK
+outputs/parte2/reports/generalizacion_lagos.md,md,2.4,standard,4-7 (reportes),OK
+outputs/parte2/reports/inventario_ejercicios_4_7.csv,csv,4.5,standard,4-7 (reportes),OK
+outputs/parte2/reports/modelado_evaluacion.md,md,6.4,standard,4-7 (reportes),OK
+outputs/parte2/reports/preparacion_dataset.md,md,12.1,standard,4-7 (reportes),OK
+outputs/parte2/reports/threshold_viability.md,md,4.4,standard,4-7 (reportes),OK
+outputs/parte2/reports/validacion_espacial.md,md,3.6,standard,4-7 (reportes),OK
+outputs/parte2/reports/validacion_pipeline.txt,txt,1.2,standard,4-7 (reportes),OK
+outputs/parte2/reports/validacion_temporal.md,md,6.0,standard,4-7 (reportes),OK
+outputs/parte2/reports/validation_dataset.txt,txt,0.6,standard,4-7 (reportes),OK
+outputs/parte2/splits/checkpoint_random_standard.json,json,0.2,standard,4.2 (division 70/30),OK
+outputs/parte2/splits/split_70_30.json,json,0.4,standard,4.2 (division 70/30),OK
+outputs/parte2/tuning/tuning_logistic_standard.json,json,1.0,standard,4.3 (ajuste de hiperparametros),OK
+outputs/parte2/tuning/tuning_random_forest_standard.json,json,1.0,standard,4.3 (ajuste de hiperparametros),OK
+outputs/parte2/tuning/tuning_xgboost_standard.json,json,1.2,standard,4.3 (ajuste de hiperparametros),OK

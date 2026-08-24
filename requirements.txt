@@ -13,3 +13,4 @@ shapely
 seaborn
 requests
 tqdm
+xgboost

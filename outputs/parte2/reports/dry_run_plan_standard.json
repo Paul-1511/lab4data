@@ -1,0 +1,397 @@
+{
+  "perfil": "standard",
+  "descripcion": "Configuracion reproducible del laboratorio",
+  "generado": "2026-08-23T20:04:41",
+  "entorno": {
+    "python": "3.11.9",
+    "numpy": "2.4.3",
+    "pandas": "2.3.3",
+    "scikit_learn": "1.9.0",
+    "cpus": 16,
+    "seed": 42,
+    "dataset_version": "2.0",
+    "schema_hash": "65825179def16792",
+    "pyarrow": "24.0.0",
+    "xgboost": "3.2.0",
+    "shap": null
+  },
+  "n_jobs": 8,
+  "modelos": [
+    "logistic",
+    "random_forest",
+    "xgboost"
+  ],
+  "features": [
+    "B02",
+    "B03",
+    "B07",
+    "B08",
+    "B8A",
+    "B11",
+    "B12",
+    "NDWI"
+  ],
+  "target": "high_cyano_8",
+  "split": {
+    "train_hash": "37c8bae266814193",
+    "test_hash": "67bc81d40aad20b0",
+    "n_train": 2629557,
+    "n_test": 1126953,
+    "prevalencia_train": 0.016011061939330464,
+    "prevalencia_test": 0.0160113154674596,
+    "positivos_train": 42102,
+    "positivos_test": 18044,
+    "semilla": 42,
+    "test_size": 0.3,
+    "estratificado_por": "high_cyano_8"
+  },
+  "tuning": {
+    "estrategia": "todos los positivos + negativos aleatorios (semilla fija)",
+    "n": 400000,
+    "positivos": 42102,
+    "negativos": 357898,
+    "prevalencia": 0.105255
+  },
+  "scale_pos_weight": 61.456819153484396,
+  "folds_espaciales": [
+    {
+      "fold": 1,
+      "n_train": 3005284,
+      "n_val": 751226,
+      "bloques_train": 267,
+      "bloques_val": 41,
+      "bloques_compartidos": 0,
+      "pos_train": 48290,
+      "pos_val": 11856,
+      "prev_train": 0.016068364919921047,
+      "prev_val": 0.015782201361507722,
+      "lagos_val": [
+        "Amatitlan",
+        "Atitlan"
+      ],
+      "lagos_train": [
+        "Amatitlan",
+        "Atitlan"
+      ],
+      "valido": true,
+      "motivo": ""
+    },
+    {
+      "fold": 2,
+      "n_train": 3004625,
+      "n_val": 751885,
+      "bloques_train": 249,
+      "bloques_val": 59,
+      "bloques_compartidos": 0,
+      "pos_train": 47484,
+      "pos_val": 12662,
+      "prev_train": 0.015803636061072514,
+      "prev_val": 0.016840341275594008,
+      "lagos_val": [
+        "Amatitlan",
+        "Atitlan"
+      ],
+      "lagos_train": [
+        "Amatitlan",
+        "Atitlan"
+      ],
+      "valido": true,
+      "motivo": ""
+    },
+    {
+      "fold": 3,
+      "n_train": 3005456,
+      "n_val": 751054,
+      "bloques_train": 234,
+      "bloques_val": 74,
+      "bloques_compartidos": 0,
+      "pos_train": 48349,
+      "pos_val": 11797,
+      "prev_train": 0.016087076303895317,
+      "prev_val": 0.015707259398125832,
+      "lagos_val": [
+        "Amatitlan",
+        "Atitlan"
+      ],
+      "lagos_train": [
+        "Amatitlan",
+        "Atitlan"
+      ],
+      "valido": true,
+      "motivo": ""
+    },
+    {
+      "fold": 4,
+      "n_train": 3005401,
+      "n_val": 751109,
+      "bloques_train": 240,
+      "bloques_val": 68,
+      "bloques_compartidos": 0,
+      "pos_train": 48294,
+      "pos_val": 11852,
+      "prev_train": 0.016069070317072498,
+      "prev_val": 0.015779334291028332,
+      "lagos_val": [
+        "Amatitlan",
+        "Atitlan"
+      ],
+      "lagos_train": [
+        "Amatitlan",
+        "Atitlan"
+      ],
+      "valido": true,
+      "motivo": ""
+    },
+    {
+      "fold": 5,
+      "n_train": 3005274,
+      "n_val": 751236,
+      "bloques_train": 242,
+      "bloques_val": 66,
+      "bloques_compartidos": 0,
+      "pos_train": 48167,
+      "pos_val": 11979,
+      "prev_train": 0.016027490338651317,
+      "prev_val": 0.01594572145104867,
+      "lagos_val": [
+        "Amatitlan",
+        "Atitlan"
+      ],
+      "lagos_train": [
+        "Amatitlan",
+        "Atitlan"
+      ],
+      "valido": true,
+      "motivo": ""
+    }
+  ],
+  "folds_temporales": [
+    {
+      "fold": 1,
+      "train_hasta": "2025-01-18 .. 2025-04-15",
+      "test_fecha": "2025-04-28",
+      "n_train": 685956,
+      "n_test": 36184,
+      "pos_train": 1082,
+      "pos_test": 4912,
+      "prev_train": 0.0015773606470385856,
+      "prev_test": 0.13575060800353747,
+      "valido": true,
+      "motivo": ""
+    },
+    {
+      "fold": 2,
+      "train_hasta": "2025-01-18 .. 2025-04-28",
+      "test_fecha": "2025-05-13",
+      "n_train": 722140,
+      "n_test": 305290,
+      "pos_train": 5994,
+      "pos_test": 23,
+      "prev_train": 0.008300329575982496,
+      "prev_test": 7.533820302007927e-05,
+      "valido": true,
+      "motivo": ""
+    },
+    {
+      "fold": 3,
+      "train_hasta": "2025-01-18 .. 2025-05-13",
+      "test_fecha": "2025-07-17",
+      "n_train": 1027430,
+      "n_test": 298689,
+      "pos_train": 6017,
+      "pos_test": 349,
+      "prev_train": 0.0058563600439932645,
+      "prev_test": 0.001168439413570637,
+      "valido": true,
+      "motivo": ""
+    },
+    {
+      "fold": 4,
+      "train_hasta": "2025-01-18 .. 2025-07-17",
+      "test_fecha": "2025-11-21",
+      "n_train": 1326119,
+      "n_test": 305298,
+      "pos_train": 6366,
+      "pos_test": 333,
+      "prev_train": 0.0048004741655914744,
+      "prev_test": 0.0010907375744354695,
+      "valido": true,
+      "motivo": ""
+    },
+    {
+      "fold": 5,
+      "train_hasta": "2025-01-18 .. 2025-11-21",
+      "test_fecha": "2025-11-24",
+      "n_train": 1631417,
+      "n_test": 36434,
+      "pos_train": 6699,
+      "pos_test": 1029,
+      "prev_train": 0.004106246287736367,
+      "prev_test": 0.02824285008508536,
+      "valido": true,
+      "motivo": ""
+    },
+    {
+      "fold": 6,
+      "train_hasta": "2025-01-18 .. 2025-11-24",
+      "test_fecha": "2025-12-29",
+      "n_train": 1667851,
+      "n_test": 309406,
+      "pos_train": 7728,
+      "pos_test": 257,
+      "prev_train": 0.004633507429620511,
+      "prev_test": 0.0008306238405202226,
+      "valido": true,
+      "motivo": ""
+    },
+    {
+      "fold": 7,
+      "train_hasta": "2025-01-18 .. 2025-12-29",
+      "test_fecha": "2026-01-08",
+      "n_train": 1977257,
+      "n_test": 36668,
+      "pos_train": 7985,
+      "pos_test": 3484,
+      "prev_train": 0.004038422926306494,
+      "prev_test": 0.09501472673720955,
+      "valido": true,
+      "motivo": ""
+    },
+    {
+      "fold": 8,
+      "train_hasta": "2025-01-18 .. 2026-01-08",
+      "test_fecha": "2026-02-02",
+      "n_train": 2013925,
+      "n_test": 36130,
+      "pos_train": 11469,
+      "pos_test": 6,
+      "prev_train": 0.005694849609593208,
+      "prev_test": 0.00016606698034874067,
+      "valido": true,
+      "motivo": ""
+    },
+    {
+      "fold": 9,
+      "train_hasta": "2025-01-18 .. 2026-02-02",
+      "test_fecha": "2026-02-07",
+      "n_train": 2050055,
+      "n_test": 36561,
+      "pos_train": 11475,
+      "pos_test": 35,
+      "prev_train": 0.005597410801173627,
+      "prev_test": 0.0009573042312847023,
+      "valido": true,
+      "motivo": ""
+    },
+    {
+      "fold": 10,
+      "train_hasta": "2025-01-18 .. 2026-02-07",
+      "test_fecha": "2026-02-12",
+      "n_train": 2086616,
+      "n_test": 306130,
+      "pos_train": 11510,
+      "pos_test": 159,
+      "prev_train": 0.005516108378350401,
+      "prev_test": 0.0005193871884493516,
+      "valido": true,
+      "motivo": ""
+    },
+    {
+      "fold": 11,
+      "train_hasta": "2025-01-18 .. 2026-02-12",
+      "test_fecha": "2026-03-24",
+      "n_train": 2392746,
+      "n_test": 305432,
+      "pos_train": 11669,
+      "pos_test": 40,
+      "prev_train": 0.004876823532460195,
+      "prev_test": 0.0001309620471987218,
+      "valido": true,
+      "motivo": ""
+    },
+    {
+      "fold": 12,
+      "train_hasta": "2025-01-18 .. 2026-03-24",
+      "test_fecha": "2026-03-29",
+      "n_train": 2698178,
+      "n_test": 36594,
+      "pos_train": 11709,
+      "pos_test": 3906,
+      "prev_train": 0.00433959508972351,
+      "prev_test": 0.10673880964092475,
+      "valido": true,
+      "motivo": ""
+    },
+    {
+      "fold": 13,
+      "train_hasta": "2025-01-18 .. 2026-03-29",
+      "test_fecha": "2026-04-13",
+      "n_train": 2734772,
+      "n_test": 341452,
+      "pos_train": 15615,
+      "pos_test": 5661,
+      "prev_train": 0.00570979957378531,
+      "prev_test": 0.01657919707601654,
+      "valido": true,
+      "motivo": ""
+    },
+    {
+      "fold": 14,
+      "train_hasta": "2025-01-18 .. 2026-04-13",
+      "test_fecha": "2026-04-28",
+      "n_train": 3076224,
+      "n_test": 339536,
+      "pos_train": 21276,
+      "pos_test": 15209,
+      "prev_train": 0.006916271376856822,
+      "prev_test": 0.044793482870741246,
+      "valido": true,
+      "motivo": ""
+    },
+    {
+      "fold": 15,
+      "train_hasta": "2025-01-18 .. 2026-04-28",
+      "test_fecha": "2026-06-19",
+      "n_train": 3415760,
+      "n_test": 36644,
+      "pos_train": 36485,
+      "pos_test": 23056,
+      "prev_train": 0.010681371056514509,
+      "prev_test": 0.6291889531710512,
+      "valido": true,
+      "motivo": ""
+    },
+    {
+      "fold": 16,
+      "train_hasta": "2025-01-18 .. 2026-06-19",
+      "test_fecha": "2026-07-22",
+      "n_train": 3452404,
+      "n_test": 304106,
+      "pos_train": 59541,
+      "pos_test": 605,
+      "prev_train": 0.01724624348714693,
+      "prev_test": 0.001989437893366129,
+      "valido": true,
+      "motivo": ""
+    }
+  ],
+  "entrenamientos": {
+    "tuning": 108,
+    "modelo final (random)": 3,
+    "validacion espacial": 15,
+    "validacion temporal": 48,
+    "generalizacion entre lagos": 2
+  },
+  "total_entrenamientos": 176,
+  "tiempo_estimado_min": 69.82454052927203,
+  "memoria_mb": 214.12107,
+  "disco_estimado_mb": 227.10416,
+  "advertencias": [
+    "La division aleatoria 70/30 mezcla pixeles vecinos del mismo bloque, asi que producira estimaciones OPTIMISTAS. Se incluye porque el enunciado la exige (4.2) y sirve de contraste frente a la validacion espacial.",
+    "Desbalance 1:61. Accuracy no puede ser la metrica principal: predecir siempre la clase mayoritaria daria 98.399 %.",
+    "Los positivos estan concentrados: 37.7 % en 5 bloques y 87.6 % en 5 fechas. La validacion espacial y la temporal seran mucho mas exigentes.",
+    "Atitlan tiene una prevalencia 227 veces menor que Amatitlan; el Experimento A partira de una base con muy pocos positivos.",
+    "El umbral operacional se fijara con validacion interna del entrenamiento; el conjunto de prueba no interviene en ninguna decision.",
+    "shap no esta instalado; sera necesario para el Ejercicio 8."
+  ]
+}

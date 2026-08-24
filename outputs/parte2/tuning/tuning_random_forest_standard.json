@@ -1,0 +1,48 @@
+{
+  "modelo": "random_forest",
+  "perfil": "standard",
+  "firma_config": "5aca800199192c10",
+  "completo": true,
+  "espacio": {
+    "max_depth": [
+      "10",
+      "14",
+      "18",
+      "24",
+      "None"
+    ],
+    "min_samples_leaf": [
+      "5",
+      "10",
+      "20",
+      "50"
+    ],
+    "max_features": [
+      "sqrt",
+      "log2",
+      "0.5"
+    ]
+  },
+  "n_configuraciones": 12,
+  "folds": 3,
+  "metrica_seleccion": "average_precision (PR-AUC)",
+  "mejores_parametros": {
+    "min_samples_leaf": 5,
+    "max_features": "sqrt",
+    "max_depth": null
+  },
+  "mejor_score": 0.9962378362309682,
+  "muestra_tuning": {
+    "estrategia": "todos los positivos + negativos aleatorios (semilla fija)",
+    "n": 400000,
+    "positivos": 42102,
+    "negativos": 357898,
+    "prevalencia": 0.105255
+  },
+  "segundos": 263.33830165863037,
+  "semilla": 42,
+  "n_entrenamiento_disponible": 2629557,
+  "hilos_busqueda": 2,
+  "hilos_modelo": 4,
+  "origen_muestra": "exclusivamente del conjunto de entrenamiento"
+}

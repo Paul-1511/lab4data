@@ -1,0 +1,32 @@
+VALIDACION DEL PIPELINE DE MODELADO - LAB 4 PARTE 2
+======================================================================
+Generado: 2026-08-23 22:19:20
+
+Version de dataset esperada: 2.0
+Particiones Parquet        : 22
+Predictores sin fuga       : 8 (B02, B03, B07, B08, B8A, B11, B12, NDWI)
+Respuesta                  : high_cyano_8
+xgboost                    : 3.2.0
+Archivos de metricas       : 14
+Firma del test             : 67bc81d40aad20b0
+Fases completadas          : 4/4 (random, spatial, temporal, cross_lake)
+Modelos serializados       : 3
+Metricas random            : 6 filas validas
+Metricas spatial           : 15 filas validas
+Metricas temporal          : 48 filas validas
+Metricas cross_lake        : 4 filas validas
+Bloques espaciales compartidos: 0
+Folds temporales           : 16
+Experimentos entre lagos   : 2 (A, B)
+Reportes completos         : 4
+Coherencia codigo/hiperparametros: verificada
+Inventario                 : 45 artefactos
+Notebook con Ejercicios 4-7: True
+Aislamiento smoke          : correcto
+
+Avisos  : 1
+  - shap no instalado (necesario para el Ejercicio 8)
+
+Criticos: 0
+
+RESULTADO: CORRECTA

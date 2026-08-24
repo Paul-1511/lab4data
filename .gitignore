@@ -20,3 +20,8 @@ outputs/logs/
 outputs/parte2/data/eda_sample.parquet
 outputs/parte2/**/*.tmp
 outputs/parte2/**/*.tmp.parquet
+
+# Artefactos del perfil smoke: NO entregables
+outputs/parte2/smoke/
+outputs/parte2/models/
+outputs/parte2/splits/
